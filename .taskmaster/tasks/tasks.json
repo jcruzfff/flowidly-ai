@@ -165,17 +165,18 @@
         "dependencies": [
           "1"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
             "title": "Configure Tailwind CSS with Avyra brand color palette and typography",
             "description": "Set up tailwind.config.ts with complete Avyra color system and font configuration",
             "dependencies": [],
-            "details": "Create tailwind.config.ts extending default theme with Avyra colors: bg-main (#08090A), bg-card (#101011), text-primary (#F7F8F8), accent-primary (#f2c6a6), and all other brand colors. Configure custom font families for Inter (sans) and Instrument Serif (serif) with appropriate font weights. Set up custom spacing scale from 4px to 96px following brand specifications. Configure responsive breakpoints at 375px, 768px, and 1280px.",
-            "status": "pending",
+            "details": "Create tailwind.config.ts extending default theme with Avyra colors: bg-main (#08090A), bg-card (#101011), text-primary (#F7F8F8), accent-primary (#f2c6a6), and all other brand colors. Configure custom font families for Inter (sans) and Instrument Serif (serif) with appropriate font weights. Set up custom spacing scale from 4px to 96px following brand specifications. Configure responsive breakpoints at 375px, 768px, and 1280px.\n<info added on 2025-11-09T08:31:22.749Z>\nCompleted Tailwind v4 configuration with CSS variable-based theme architecture. Implemented @theme inline configuration in globals.css with complete Avyra dark theme including all brand colors as CSS variables for future theme switching. Added Inter and Instrument Serif font families via Google Fonts. Configured full spacing scale (4px-96px), border radius scale (8px-30px), shadow system (sm/md/lg), and transition utilities (fast/base/slow). Created brand utility classes: .input-linear for styled inputs, .btn-primary with copper gradient, .btn-secondary dark buttons, .card-linear with hover effects, .badge-linear status pills, .gradient-heading for hero text, and custom scrollbar styling. Theme-ready structure allows adding light mode or additional themes by updating CSS variables without code refactoring. Homepage updated to showcase complete design system implementation.\n</info added on 2025-11-09T08:31:22.749Z>",
+            "status": "done",
             "testStrategy": "Verify all color values match minibrandguide.txt exactly using visual inspection and automated color extraction tests. Test font loading across different browsers. Validate spacing scale values are correctly applied.",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T08:29:02.280Z"
           },
           {
             "id": 2,
@@ -185,9 +186,10 @@
               1
             ],
             "details": "Update globals.css with brand-specific utility classes: .input-linear for form inputs with dark styling and copper accents, .btn-primary with copper gradient (#f2c6a6 to darker shade), .btn-secondary with outline styling, .card-linear for card containers with #101011 background, .shadow-linear variants for elevation effects. Include hover state animations with smooth transitions and scale effects matching brand specifications.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Visual regression testing comparing rendered components against minibrandguide.txt specifications. Test hover states and animations for smooth transitions. Verify class names are correctly applied and styles cascade properly.",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T08:55:08.038Z"
           },
           {
             "id": 3,
@@ -197,9 +199,10 @@
               1
             ],
             "details": "Define CSS custom properties and utility classes for brand gradients used in hero sections and button backgrounds. Implement copper gradient variations for primary CTAs. Create custom scrollbar styling using webkit-scrollbar pseudo-elements with dark theme (#08090A track, #f2c6a6 thumb) to match Avyra brand. Add smooth scrolling behavior and hover effects on scrollbar thumb.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test gradient rendering across different browsers (Chrome, Firefox, Safari). Verify scrollbar styling works on webkit and non-webkit browsers. Test gradient color stops match brand specifications.",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T08:55:40.814Z"
           },
           {
             "id": 4,
@@ -209,9 +212,10 @@
               2
             ],
             "details": "Build src/components/ui/Button.tsx component with TypeScript props for variant (primary/secondary), size (sm/md/lg), and disabled states. Primary variant uses copper gradient background with white text, hover scale animation, and shadow effects. Secondary variant has transparent background with copper border and text. Include loading state with spinner animation. Implement proper accessibility with ARIA labels and keyboard navigation support.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test all button variants render correctly with proper styling. Verify hover and active states work as expected. Test accessibility with keyboard navigation and screen readers. Validate responsive sizing at all breakpoints (375px/768px/1280px).",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T08:56:41.196Z"
           },
           {
             "id": 5,
@@ -221,11 +225,13 @@
               2
             ],
             "details": "Build src/components/ui/Card.tsx with #101011 background, subtle border, and .card-linear styling. Create src/components/ui/Input.tsx with .input-linear class, dark background, copper focus ring, and proper label/error state handling. Implement src/components/ui/Badge.tsx with size variants and color options (default, success, warning, error) using brand color palette. All components should be fully typed with TypeScript and support className prop for extensibility.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Visual regression tests for each component against brand guide. Test Input component focus states and error validation styling. Verify Card shadows and borders render correctly. Test Badge color variants match brand palette. Validate all components are responsive at 375px/768px/1280px breakpoints.",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T09:02:39.918Z"
           }
-        ]
+        ],
+        "updatedAt": "2025-11-09T09:02:39.918Z"
       },
       {
         "id": "4",
@@ -237,7 +243,7 @@
         "dependencies": [
           "2"
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -245,9 +251,10 @@
             "description": "Use Supabase CLI to automatically generate TypeScript types from the database schema",
             "dependencies": [],
             "details": "Run 'supabase gen types typescript' command to generate base database types from the Supabase schema. This will create type definitions that match the database tables, columns, and relationships established in task 12. Save the generated types as a foundation for custom type definitions.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Verify generated types file exists, contains all table definitions, and TypeScript compilation succeeds without errors",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T09:11:39.802Z"
           },
           {
             "id": 2,
@@ -257,9 +264,10 @@
               1
             ],
             "details": "Create src/types/ directory structure. In database.ts, define interfaces for User (with role enum), Proposal (with ProposalStatus enum: draft, sent, viewed, signed, paid, expired), Template, Section, Signature, Payment (with PaymentStatus enum: pending, completed, failed, refunded), and Event (with EventType enum: created, sent, viewed, signed, paid, etc.). Include proper typing for all fields, timestamps, foreign keys, and nullable fields.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "TypeScript compilation succeeds, all enums are properly typed, interfaces match database schema from task 12",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T09:12:07.373Z"
           },
           {
             "id": 3,
@@ -269,9 +277,10 @@
               2
             ],
             "details": "Create src/types/proposal.ts with detailed Proposal interface including nested Section instances, Template references, User relationships, and Signature data. Define ProposalWithSections, ProposalListItem, ProposalDetail types for different use cases. Include types for proposal creation, updates, and client-facing views. Add utility types like ProposalFormData and ProposalUpdatePayload.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "All proposal-related components can use these types without errors, nested relationships are properly typed",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T09:12:31.163Z"
           },
           {
             "id": 4,
@@ -281,9 +290,10 @@
               2
             ],
             "details": "Create src/types/analytics.ts with interfaces for Event tracking, aggregated metrics, dashboard statistics, and reporting data. Define API response types including ApiResponse<T>, PaginatedResponse<T>, ErrorResponse, and SuccessResponse wrappers. Create form validation schemas using Zod for proposal creation, template management, user registration, and payment processing. Include proper error typing and validation result types.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "API calls properly typed with response wrappers, Zod schemas validate correctly, analytics queries return properly typed data",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T09:13:01.113Z"
           },
           {
             "id": 5,
@@ -294,11 +304,13 @@
               4
             ],
             "details": "Create utility types for frontend components including SelectOption, FormField, TableColumn, FilterOptions, SortOptions, and component prop types. Add conditional types, mapped types, and type guards as needed. Create src/types/index.ts barrel file that exports all types from database.ts, proposal.ts, analytics.ts, and utility types. Organize exports logically with named exports for easy importing throughout the application.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "All types can be imported from single index.ts file, no circular dependencies, TypeScript compilation succeeds across entire project with no type errors",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T09:13:38.966Z"
           }
-        ]
+        ],
+        "updatedAt": "2025-11-09T09:13:38.966Z"
       },
       {
         "id": "5",
@@ -372,7 +384,8 @@
             "testStrategy": "E2E tests verifying sessions persist across browser refreshes, test automatic session refresh before expiration, validate auth state updates correctly on login/logout, check expired sessions redirect to login",
             "parentId": "undefined"
           }
-        ]
+        ],
+        "updatedAt": "2025-11-09T09:10:25.724Z"
       },
       {
         "id": "6",
@@ -746,9 +759,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-11-09T08:24:05.347Z",
+      "lastModified": "2025-11-09T09:13:38.967Z",
       "taskCount": 10,
-      "completedCount": 2,
+      "completedCount": 4,
       "tags": [
         "master"
       ]

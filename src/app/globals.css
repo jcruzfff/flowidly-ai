@@ -1,26 +1,99 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:wght@400&display=swap');
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* =====================================================
+   AVYRA DESIGN SYSTEM - CSS VARIABLES
+   ===================================================== */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  /* Background Colors - Clean & Professional */
+  --color-bg-main: #FFFFFF;
+  --color-bg-secondary: #F9FAFB;
+  --color-bg-card: #FFFFFF;
+  --color-bg-hover: #F9FAFB;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Text Colors - High Contrast */
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-muted: #9CA3AF;
+
+  /* Accent Colors - Professional Blue */
+  --color-accent-primary: #0082ff;
+  --color-accent-hover: #0070e0;
+  --color-accent-light: #f0f8ff;
+
+  /* Border Colors - Subtle & Clean */
+  --color-border-default: #e5e7eb;
+  --color-border-light: #f3f4f6;
+  --color-border-hover: #d1d5db;
+  --color-border-focus: #0082ff;
+
+  /* State Colors */
+  --color-success: #10b981;
+  --color-success-bg: #f0fdf4;
+  --color-success-border: #d1fae5;
+  --color-error: #ef4444;
+  --color-error-bg: #fef2f2;
+  --color-error-border: #fecaca;
+  --color-warning: #f59e0b;
+  --color-warning-bg: #fffbeb;
+
+  /* Fonts */
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-serif: 'Instrument Serif', Georgia, serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =====================================================
+   CUSTOM SCROLLBAR STYLING
+   ===================================================== */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 5px;
+  border: 2px solid var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* =====================================================
+   HELPER UTILITIES
+   ===================================================== */
+
+/* Heading Gradient (subtle professional effect) */
+.gradient-heading {
+  background: linear-gradient(135deg,
+      #111827 0%,
+      #0082ff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* =====================================================
+   ACCESSIBILITY
+   ===================================================== */
+
+*:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
