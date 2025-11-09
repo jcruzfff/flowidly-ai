@@ -1,0 +1,425 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║                      AVYRA AI - MINI BRAND GUIDE                         ║
+║                          Design System v1.0                              ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════
+1. COLOR PALETTE
+═══════════════════════════════════════════════════════════════════════════
+
+PRIMARY COLORS
+──────────────
+Background (Main)           #08090A
+Background (Card)           #101011
+Background (Card Hover)     #111213
+
+Text (Primary)              #F7F8F8
+Text (Secondary)            rgba(247, 248, 248, 0.7)
+Text (Muted)                #8A8F98
+
+ACCENT COLORS (Copper/Gold)
+───────────────────────────
+Primary Accent              #f2c6a6
+Secondary Accent            #bc845b
+Accent Hover Light          #f4c8a8
+Accent Hover Dark           #be865d
+Accent Light Glow           #FFE1C6
+
+BORDER COLORS
+─────────────
+Border (Card)               #1B1C1D
+Border (Card Hover)         #1E1F20
+Border (Button)             #27272A
+Border (Subtle)             #242424
+
+STATE COLORS
+────────────
+Success                     #22c55e
+Success Background          #131a14
+Success Border              #1f3122
+
+Error                       #ef4444
+Error Background            #1a1213
+Error Border                #3d2022
+
+Warning                     #F59E0B
+
+BUTTON COLORS
+─────────────
+Primary Button BG           #E6E6E6
+Primary Button Text         #08090A
+Primary Button Hover        #F0F0F0
+
+Secondary Button BG         #28282C
+Secondary Button Text       #F7F8F8
+Secondary Button Hover      #2D2D31
+
+Google OAuth Button         rgb(87, 91, 199)
+
+═══════════════════════════════════════════════════════════════════════════
+2. TYPOGRAPHY
+═══════════════════════════════════════════════════════════════════════════
+
+FONTS
+─────
+Primary Font                Inter
+Secondary Font              Instrument Serif (for special headings)
+Fallback                    SF Pro Display, system-ui, -apple-system, sans-serif
+
+HEADING GRADIENT STYLE
+──────────────────────
+background: radial-gradient(
+  86% 99% at 50% 50%, 
+  #D5DBE6 28.39%, 
+  #A1A6B0 46.29%, 
+  #878C95 55.24%, 
+  #6D717A 64.19%, 
+  #52575E 73.15%, 
+  #383C43 82.10%, 
+  #1E2228 91.05%, 
+  #111419 95.52%, 
+  #04070D 100%
+)
+backgroundClip: text
+WebkitBackgroundClip: text
+WebkitTextFillColor: transparent
+
+SIZES
+─────
+Hero Heading                56px (desktop) / 32px-44px (mobile)
+Section Heading             44px (desktop) / 32px (mobile)
+Subheading                  24px
+Body Text                   16px / 15px
+Small Text                  14px
+Caption                     13px
+Tiny Text                   12px
+
+WEIGHTS
+───────
+Regular                     400
+Medium                      500
+Semibold                    600
+Bold                        700
+
+LINE HEIGHT
+───────────
+Headings                    1.2
+Body                        1.6
+Tight                       1.33
+
+TRACKING
+────────
+Buttons                     -0.16px
+Body                        normal
+
+═══════════════════════════════════════════════════════════════════════════
+3. COMPONENTS
+═══════════════════════════════════════════════════════════════════════════
+
+PRIMARY BUTTON (Copper/Gold)
+────────────────────────────
+Container:
+  - Padding: 2px
+  - Border radius: 8px
+  - Background: radial-gradient(50% 20.7% at 50% 100%, #FFE1C6 0%, rgba(255, 225, 198, 0.00) 100%)
+
+Button:
+  - Background: linear-gradient(to bottom, #f2c6a6, #bc845b)
+  - Border radius: 8px
+  - Padding: 12px 32px
+  - Height: 50px
+  - Text: #3a3a3a, 16px, semibold, tracking -0.16px
+  - Hover: from-[#f4c8a8] to-[#be865d]
+  - Icon: Arrow right (22x22px)
+
+Usage: CTAs, primary actions, main conversions
+
+SECONDARY BUTTON (Linear Style)
+────────────────────────────────
+- Background: #28282C (transparent on auth pages)
+- Border: 1px solid #3E3E44 (or none)
+- Border radius: 10px
+- Padding: 10px 17px
+- Font size: 15px
+- Font weight: 600
+- Hover: background #2D2D31
+
+Usage: Secondary actions, cancel buttons
+
+EXIT/CLOSE BUTTON
+─────────────────
+- Background: transparent
+- Border: 1px solid #242424
+- Border radius: full (circle)
+- Padding: 6px-12px (responsive)
+- Position: absolute top-[4%] right-[4%]
+- Icon: X (14px mobile / 20px desktop)
+- Hover: bg-white/5
+
+BADGE/PILL
+──────────
+- Background: #1a1b20
+- Border radius: full (rounded-full)
+- Padding: 8px 16px
+- Dot: 8px circle, gradient from #f2c6a6 to #bb835a
+- Text: #f2c6a6, 14px, medium, uppercase
+
+Usage: Page labels, status indicators
+
+CARD
+────
+- Background: #101011
+- Border: 1px solid #1B1C1D
+- Border radius: 30px (large cards) / 12px-16px (small)
+- Padding: 32px-48px (desktop) / 24px (mobile)
+- Shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4)
+- Hover: bg #111213, border #1E1F20, translateY(-2px)
+
+INPUT FIELDS
+────────────
+- Background: #101011
+- Border: 1px solid #1B1C1D
+- Border radius: 8px
+- Padding: 13px 16px
+- Font size: 15px
+- Color: #F7F8F8
+- Placeholder: #8A8F98
+- Focus: outline none, subtle border highlight
+- Hover: border #2A2A2E
+
+Class: .input-linear
+
+SELECT DROPDOWN
+───────────────
+Same styling as input fields
+Option background: #101011
+
+LINKS
+─────
+- Color: #f2c6a6 (accent) or #F7F8F8 (standard)
+- Hover: #f4d0b4 (lighter accent) or #E6E6E6
+- Text decoration: underline (for inline links)
+- Transition: all 0.2s ease
+
+═══════════════════════════════════════════════════════════════════════════
+4. LAYOUT & SPACING
+═══════════════════════════════════════════════════════════════════════════
+
+SPACING SCALE
+─────────────
+xs:  4px
+sm:  8px
+md:  16px
+lg:  24px
+xl:  32px
+2xl: 48px
+3xl: 64px
+4xl: 96px
+
+CONTAINER
+─────────
+Max width: 1280px (large content) / 1024px (standard)
+Padding: 16px (mobile) / 32px (tablet) / 64px (desktop)
+
+SECTION PADDING
+───────────────
+Top/Bottom: 80px-120px (desktop) / 40px-60px (mobile)
+
+GRID
+────
+Gap: 24px-32px
+Responsive: flex-col mobile → grid desktop
+
+═══════════════════════════════════════════════════════════════════════════
+5. EFFECTS & ANIMATIONS
+═══════════════════════════════════════════════════════════════════════════
+
+SHADOWS
+───────
+Small:      0 4px 6px -1px rgba(0, 0, 0, 0.4), 
+            0 2px 4px -1px rgba(0, 0, 0, 0.1)
+
+Large:      0 10px 15px -3px rgba(0, 0, 0, 0.4), 
+            0 4px 6px -2px rgba(0, 0, 0, 0.1)
+
+Extra Large: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 
+             0 10px 10px -5px rgba(0, 0, 0, 0.1)
+
+Classes: .shadow-linear, .shadow-linear-lg, .shadow-linear-xl
+
+GRADIENTS
+─────────
+Hero Background:
+  linear-gradient(135deg, #08090A 0%, rgba(97, 106, 115, 0.1) 40%, #08090A 100%)
+
+Card Background:
+  linear-gradient(135deg, #101011 0%, #111213 100%)
+
+Button Glow (decorative):
+  radial-gradient(circle, rgba(242, 198, 166, 0.5), transparent)
+
+TRANSITIONS
+───────────
+Standard:   all 0.2s ease
+Smooth:     all 0.3s ease
+Slow:       all 0.8s ease
+
+ANIMATIONS (Framer Motion)
+──────────────────────────
+Fade In:
+  initial: { opacity: 0, y: 30 }
+  animate: { opacity: 1, y: 0 }
+  transition: { duration: 0.8 }
+
+Scale In:
+  initial: { opacity: 0, scale: 0.9 }
+  animate: { opacity: 1, scale: 1 }
+  transition: { duration: 0.6 }
+
+Stagger Children:
+  stagger: 0.1-0.2 seconds
+
+HOVER EFFECTS
+─────────────
+Buttons:        scale(1.02) or slight color shift
+Cards:          translateY(-2px) + border color change
+Links:          color shift
+Icons:          color #f2c6a6
+
+═══════════════════════════════════════════════════════════════════════════
+6. VIDEO PLAYER
+═══════════════════════════════════════════════════════════════════════════
+
+CONTAINER
+─────────
+- Width: calc(100vw - 32px) mobile / 868px desktop
+- Aspect ratio: 16:9
+- Background: #393939
+- Border radius: 0 (or slight radius)
+
+PLAY BUTTON
+───────────
+- Size: 100px mobile / 170px desktop
+- Background: black/25 with backdrop-blur-[10px]
+- Border: 1px solid white/10
+- Icon: White (hover: #f2c6a6)
+- Shadow: 0px 8px 10px rgba(0,0,0,0.05)
+
+FULLSCREEN BUTTON
+─────────────────
+- Position: absolute bottom-3/4 right-3/4
+- Background: black/50 hover:black/70
+- Backdrop blur: sm
+- Border radius: 8px
+- Padding: 8px-10px
+- Opacity: 100 mobile / 0 desktop (show on hover)
+- Icon: 20px mobile / 24px desktop
+
+═══════════════════════════════════════════════════════════════════════════
+7. SCROLLBAR
+═══════════════════════════════════════════════════════════════════════════
+
+Width:          8px
+Track:          #08090A
+Thumb:          #1B1C1D
+Thumb Hover:    #8A8F98
+Border radius:  4px
+
+═══════════════════════════════════════════════════════════════════════════
+8. BREAKPOINTS
+═══════════════════════════════════════════════════════════════════════════
+
+Mobile:         < 640px
+Tablet:         640px - 1024px
+Desktop:        > 1024px
+Large Desktop:  > 1280px
+
+Mobile-first approach (use md: and lg: prefixes in Tailwind)
+
+═══════════════════════════════════════════════════════════════════════════
+9. BRAND VOICE & PATTERNS
+═══════════════════════════════════════════════════════════════════════════
+
+VISUAL STYLE
+────────────
+- Dark, sophisticated, tech-forward
+- Minimalist with purposeful accents
+- Copper/gold as the premium accent
+- Generous white space
+- Subtle animations (never jarring)
+
+INTERACTION PATTERNS
+────────────────────
+- Smooth page transitions
+- Subtle hover states
+- Loading states with spinners (copper colored)
+- Toast notifications (match card style)
+- Modal overlays with backdrop blur
+
+ERROR/SUCCESS STATES
+────────────────────
+- Always include an icon
+- Use colored backgrounds (subtle tints)
+- Provide helpful hints for errors
+- Success messages should be encouraging
+
+ACCESSIBILITY
+─────────────
+- Focus visible: 2px solid #E6E6E6
+- Keyboard navigation supported
+- Semantic HTML
+- ARIA labels on interactive elements
+- Sufficient color contrast (WCAG AA)
+
+═══════════════════════════════════════════════════════════════════════════
+10. USAGE NOTES
+═══════════════════════════════════════════════════════════════════════════
+
+DO'S
+────
+✓ Use the copper/gold gradient for primary CTAs
+✓ Maintain consistent spacing with the scale
+✓ Use Framer Motion for page animations
+✓ Keep backgrounds dark (#08090A or #101011)
+✓ Use the gradient text effect for hero headings
+✓ Add subtle hover states to interactive elements
+✓ Use the badge component for page labels
+✓ Include loading states for async actions
+
+DON'TS
+──────
+✗ Don't use bright, saturated colors (except accent)
+✗ Don't use multiple accent colors
+✗ Don't over-animate (keep it subtle)
+✗ Don't use pure white (#FFFFFF) - use #F7F8F8
+✗ Don't use pure black (#000000) - use #08090A
+✗ Don't use default browser input styles
+✗ Don't forget responsive design (mobile-first)
+✗ Don't use emojis unless explicitly requested
+
+═══════════════════════════════════════════════════════════════════════════
+11. QUICK REFERENCE CLASSES
+═══════════════════════════════════════════════════════════════════════════
+
+From globals.css:
+  .bg-main              Background main color
+  .bg-card              Card background
+  .bg-card-hover        Card hover state
+  .text-primary         Primary text color
+  .text-secondary       Secondary text color
+  .text-muted           Muted text color
+  .input-linear         Styled input field
+  .btn-primary          Primary button (light)
+  .btn-secondary        Secondary button (dark)
+  .btn-google           Google OAuth button
+  .card-linear          Card component
+  .shadow-linear        Small shadow
+  .shadow-linear-lg     Large shadow
+  .shadow-linear-xl     Extra large shadow
+
+═══════════════════════════════════════════════════════════════════════════
+
+End of Mini Brand Guide
+Last Updated: November 2025
+Version: 1.0
+

@@ -1,0 +1,1459 @@
+# Avyra Proposal Platform - Product Requirements Document
+
+<overview>
+## Problem Statement
+
+Sales and consulting teams waste significant time creating, sending, and tracking business proposals. Traditional approaches involve:
+- Manual document creation in Word/Google Docs (time-consuming, error-prone)
+- Static PDFs that provide no engagement insights
+- Disconnected payment collection requiring multiple tools
+- No visibility into client engagement (did they read it? which sections?)
+- Cumbersome signature collection processes
+- Inability to reuse and templatize successful proposals
+
+The result: slow sales cycles, lost deals due to friction, and no data-driven proposal optimization.
+
+## Target Users
+
+**Primary: Internal Admins (Sales/Consulting Team)**
+- Create proposals from meeting notes or manual input
+- Monitor proposal engagement analytics
+- Manage templates and reusable sections
+- Track revenue pipeline and conversion metrics
+- Need fast turnaround (< 15 minutes from meeting to sent proposal)
+
+**Secondary: External Clients (Proposal Recipients)**
+- Receive personalized proposal link via email
+- Review interactive web-based proposal
+- Sign electronically
+- Pay via Stripe checkout
+- Mobile-friendly experience required
+
+## Success Metrics
+
+- **Speed**: Proposal creation time < 15 minutes from meeting notes to sent link
+- **Conversion**: Track view-to-sign rate (target: > 40%)
+- **Revenue visibility**: Real-time dashboard showing pipeline value and closed deals
+- **Engagement**: 100% visibility into client interactions (views, time spent, sections clicked)
+- **Adoption**: Admin team uses platform for 100% of proposals within 3 months
+
+</overview>
+
+---
+
+<functional-decomposition>
+## Capability Tree
+
+### Capability: Authentication & Authorization
+Secure access control for internal admins and external proposal recipients.
+
+#### Feature: Admin Authentication
+- **Description**: Supabase-based authentication for internal team members
+- **Inputs**: Email/password credentials or OAuth provider
+- **Outputs**: Authenticated session, user profile, role assignments
+- **Behavior**: Validate credentials, create session, enforce role-based access
+
+#### Feature: Proposal Access Control
+- **Description**: Secure, tokenized access to individual proposals for clients
+- **Inputs**: Unique proposal token from URL
+- **Outputs**: Authorized access to specific proposal data
+- **Behavior**: Validate token, check expiration, log access event, allow view-only access
+
+#### Feature: Role-Based Permissions
+- **Description**: Enforce admin vs viewer permissions throughout application
+- **Inputs**: User role, requested action
+- **Outputs**: Permission grant/deny
+- **Behavior**: Check role against action whitelist, enforce at API and UI layers
+
+---
+
+### Capability: Proposal Template Management
+Create, edit, and organize reusable proposal templates with modular sections.
+
+#### Feature: Template CRUD Operations
+- **Description**: Create, read, update, delete proposal templates
+- **Inputs**: Template metadata (name, description), section definitions
+- **Outputs**: Persisted template record in Supabase
+- **Behavior**: Validate template structure, store in database, maintain version history
+
+#### Feature: Section Library Management
+- **Description**: Manage reusable content blocks (intro, services, pricing, terms)
+- **Inputs**: Section content (rich text, media URLs), section type, toggle settings
+- **Outputs**: Section records linked to templates
+- **Behavior**: Store section data, support rich text formatting, enable/disable toggles
+
+#### Feature: Template Duplication
+- **Description**: Clone existing templates for rapid iteration
+- **Inputs**: Source template ID
+- **Outputs**: New template with copied structure and content
+- **Behavior**: Deep copy template and all sections, assign new IDs
+
+---
+
+### Capability: Proposal Creation & Authoring
+Transform meeting notes or manual inputs into structured, personalized proposals.
+
+#### Feature: Manual Data Entry Form
+- **Description**: Structured form for admins to input proposal details
+- **Inputs**: Client info, project scope, pricing, timeline, custom notes
+- **Outputs**: Structured proposal data object
+- **Behavior**: Validate required fields, format data, prepare for template population
+
+#### Feature: Transcript Import & Parsing
+- **Description**: Import meeting transcripts and extract key proposal elements
+- **Inputs**: Raw transcript text (Fireflies or manual paste)
+- **Outputs**: Extracted entities (client name, budget, requirements, timeline)
+- **Behavior**: Use LLM to parse transcript, identify key fields, pre-populate form
+
+#### Feature: Template Population
+- **Description**: Merge proposal data with selected template
+- **Inputs**: Template ID, proposal data object
+- **Outputs**: Fully populated proposal ready for review
+- **Behavior**: Replace template variables, apply conditional sections, generate preview
+
+#### Feature: Section Toggle Management
+- **Description**: Enable/disable specific sections per proposal
+- **Inputs**: Proposal ID, section IDs to show/hide
+- **Outputs**: Updated proposal configuration
+- **Behavior**: Store toggle state, affect client-facing rendering
+
+#### Feature: Proposal Link Generation
+- **Description**: Create secure, shareable URLs for proposals
+- **Inputs**: Proposal ID, recipient email
+- **Outputs**: Unique tokenized URL, expiration settings
+- **Behavior**: Generate cryptographically secure token, store mapping, set expiration
+
+---
+
+### Capability: Client Proposal Experience
+Interactive, responsive web pages for proposal viewing, signing, and payment.
+
+#### Feature: Responsive Proposal Rendering
+- **Description**: Render proposal as beautiful, mobile-friendly web page
+- **Inputs**: Proposal data, active section toggles, brand styling
+- **Outputs**: Server-rendered HTML with Avyra brand design
+- **Behavior**: Apply brand guide styles, respect section toggles, optimize for all devices
+
+#### Feature: Interactive Pricing Display
+- **Description**: Show pricing tables with optional line item details
+- **Inputs**: Pricing data (line items, totals, discounts)
+- **Outputs**: Formatted pricing section with visual hierarchy
+- **Behavior**: Calculate totals, display currency formatting, highlight key figures
+
+#### Feature: Media Embedding
+- **Description**: Embed images, videos, and other media in proposals
+- **Inputs**: Media URLs from Supabase Storage
+- **Outputs**: Rendered media elements with proper loading states
+- **Behavior**: Lazy load images, embed video players, handle errors gracefully
+
+---
+
+### Capability: E-Signature Capture
+Legally compliant electronic signature collection.
+
+#### Feature: Signature Canvas
+- **Description**: Capture typed or drawn signatures from clients
+- **Inputs**: Client signature input (typed name or canvas drawing)
+- **Outputs**: Signature image data, timestamp, IP address
+- **Behavior**: Render signature input UI, capture metadata, validate completion
+
+#### Feature: Signature Verification & Storage
+- **Description**: Store signature with audit trail for legal compliance
+- **Inputs**: Signature data, signer identity, timestamp
+- **Outputs**: Signed proposal record with immutable audit log
+- **Behavior**: Hash signature data, store in Supabase, trigger status update
+
+#### Feature: PDF Snapshot Generation
+- **Description**: Generate PDF of signed proposal for records
+- **Inputs**: Signed proposal data
+- **Outputs**: PDF file stored in Supabase Storage
+- **Behavior**: Render proposal as PDF, embed signature, store with proposal record
+
+---
+
+### Capability: Payment Integration
+Stripe-powered payment collection linked to proposals.
+
+#### Feature: Stripe Checkout Session Creation
+- **Description**: Generate Stripe checkout links for proposal amounts
+- **Inputs**: Proposal ID, line items, total amount, client email
+- **Outputs**: Stripe Checkout Session URL
+- **Behavior**: Create Stripe session, link to proposal, set success/cancel URLs
+
+#### Feature: Payment Status Tracking
+- **Description**: Monitor payment status via Stripe webhooks
+- **Inputs**: Stripe webhook events (payment_intent.succeeded, etc.)
+- **Outputs**: Updated proposal payment status
+- **Behavior**: Verify webhook signature, update Supabase, trigger notifications
+
+#### Feature: Payment Link Display
+- **Description**: Show payment button/link in proposal interface
+- **Inputs**: Stripe Checkout Session URL, payment status
+- **Outputs**: Rendered payment CTA with appropriate state
+- **Behavior**: Display button, handle loading states, show payment confirmation
+
+---
+
+### Capability: Analytics & Event Tracking
+Comprehensive tracking of client engagement with proposals.
+
+#### Feature: View Event Logging
+- **Description**: Track when clients open and view proposals
+- **Inputs**: Proposal token, timestamp, user agent, IP address
+- **Outputs**: View event record in database
+- **Behavior**: Log on page load, capture metadata, deduplicate rapid refreshes
+
+#### Feature: Interaction Event Tracking
+- **Description**: Track specific client actions (section clicks, payment button, signature)
+- **Inputs**: Event type, proposal ID, timestamp, event metadata
+- **Outputs**: Interaction event records
+- **Behavior**: Emit events from client, batch send to API, store in Supabase
+
+#### Feature: Time-on-Page Tracking
+- **Description**: Measure how long clients spend reviewing proposals
+- **Inputs**: Page visibility events, focus/blur events
+- **Outputs**: Aggregated time spent per proposal
+- **Behavior**: Track active time, ignore idle periods, store duration
+
+#### Feature: Metrics Aggregation
+- **Description**: Calculate summary statistics for dashboard
+- **Inputs**: Raw event data from all proposals
+- **Outputs**: Aggregated metrics (total views, avg time, conversion rates)
+- **Behavior**: Run scheduled aggregation jobs, maintain materialized views
+
+---
+
+### Capability: Admin Dashboard & Reporting
+Centralized interface for managing proposals and viewing analytics.
+
+#### Feature: Proposal Pipeline View
+- **Description**: Kanban-style view of proposals by status
+- **Inputs**: User's proposals, filter criteria
+- **Outputs**: Organized proposal cards by status (Draft, Sent, Viewed, Signed, Paid)
+- **Behavior**: Query Supabase, group by status, enable drag-to-update
+
+#### Feature: Individual Proposal Analytics
+- **Description**: Detailed engagement metrics for single proposal
+- **Inputs**: Proposal ID
+- **Outputs**: View timeline, interaction log, conversion funnel
+- **Behavior**: Query events, visualize timeline, show key milestones
+
+#### Feature: Aggregate Revenue Metrics
+- **Description**: High-level business metrics across all proposals
+- **Inputs**: Date range filter, user filter (optional)
+- **Outputs**: Total pipeline value, closed revenue, acceptance rate, avg proposal value
+- **Behavior**: Query aggregated data, calculate KPIs, render charts
+
+#### Feature: Real-Time Notifications
+- **Description**: Alert admins when clients interact with proposals
+- **Inputs**: Proposal events (viewed, signed, paid)
+- **Outputs**: In-app notifications, optional email/Slack alerts
+- **Behavior**: Listen to event stream, trigger notifications, mark as read
+
+---
+
+### Capability: Brand Styling & Theming
+Apply Avyra brand design system consistently across all interfaces.
+
+#### Feature: Global Style Configuration
+- **Description**: Centralized brand styling based on minibrandguide.txt
+- **Inputs**: Brand guide specifications (colors, typography, spacing)
+- **Outputs**: CSS variables, Tailwind config, reusable components
+- **Behavior**: Define design tokens, create utility classes, enforce consistency
+
+#### Feature: Component Library
+- **Description**: Reusable UI components following Avyra design system
+- **Inputs**: Component props, content
+- **Outputs**: Styled React components (buttons, cards, inputs, etc.)
+- **Behavior**: Apply brand styles, handle states (hover, focus, disabled)
+
+</functional-decomposition>
+
+---
+
+<structural-decomposition>
+## Repository Structure
+
+```
+get-avyra/
+├── src/
+│   ├── app/                          # Next.js App Router
+│   │   ├── (admin)/                  # Admin-only routes (authenticated)
+│   │   │   ├── dashboard/
+│   │   │   ├── proposals/
+│   │   │   │   ├── new/
+│   │   │   │   ├── [id]/edit/
+│   │   │   │   └── [id]/analytics/
+│   │   │   └── templates/
+│   │   ├── (auth)/                   # Auth routes
+│   │   │   ├── login/
+│   │   │   └── signup/
+│   │   ├── p/[token]/                # Public proposal view
+│   │   ├── api/
+│   │   │   ├── proposals/
+│   │   │   ├── analytics/
+│   │   │   ├── stripe/
+│   │   │   │   └── webhook/
+│   │   │   └── signatures/
+│   │   ├── layout.tsx
+│   │   └── globals.css               # Brand styles from minibrandguide.txt
+│   ├── components/
+│   │   ├── ui/                       # Base UI components (brand system)
+│   │   │   ├── Button.tsx
+│   │   │   ├── Card.tsx
+│   │   │   ├── Input.tsx
+│   │   │   └── Badge.tsx
+│   │   ├── proposal/                 # Proposal-specific components
+│   │   │   ├── ProposalRenderer.tsx
+│   │   │   ├── PricingTable.tsx
+│   │   │   ├── SignatureCanvas.tsx
+│   │   │   └── PaymentButton.tsx
+│   │   ├── dashboard/                # Dashboard components
+│   │   │   ├── ProposalPipeline.tsx
+│   │   │   ├── MetricsCard.tsx
+│   │   │   └── AnalyticsChart.tsx
+│   │   └── forms/                    # Form components
+│   │       ├── ProposalForm.tsx
+│   │       └── TranscriptImport.tsx
+│   ├── lib/
+│   │   ├── supabase/                 # Supabase client & utilities
+│   │   │   ├── client.ts
+│   │   │   ├── server.ts
+│   │   │   └── middleware.ts
+│   │   ├── stripe/                   # Stripe integration
+│   │   │   ├── client.ts
+│   │   │   └── webhooks.ts
+│   │   ├── analytics/                # Analytics tracking
+│   │   │   ├── tracker.ts
+│   │   │   └── aggregator.ts
+│   │   ├── ai/                       # LLM integration for transcript parsing
+│   │   │   └── transcript-parser.ts
+│   │   └── utils/                    # Shared utilities
+│   │       ├── tokens.ts
+│   │       └── validation.ts
+│   ├── types/                        # TypeScript definitions
+│   │   ├── proposal.ts
+│   │   ├── analytics.ts
+│   │   └── database.ts
+│   └── styles/
+│       └── brand.css                 # Extracted brand guide styles
+├── supabase/
+│   ├── migrations/                   # Database migrations
+│   └── functions/                    # Edge functions
+│       ├── aggregate-metrics/
+│       └── send-notifications/
+├── public/
+│   └── brand-assets/
+├── .env.local
+├── next.config.ts
+├── tailwind.config.ts                # Configured with brand colors
+└── package.json
+```
+
+## Module Definitions
+
+### Module: Authentication (`src/lib/supabase/`)
+- **Maps to capability**: Authentication & Authorization
+- **Responsibility**: Handle all auth flows and session management
+- **File structure**:
+  ```
+  supabase/
+  ├── client.ts          # Client-side Supabase client
+  ├── server.ts          # Server-side Supabase client
+  └── middleware.ts      # Auth middleware for protected routes
+  ```
+- **Exports**:
+  - `createClient()` - Initialize Supabase client
+  - `getSession()` - Retrieve current user session
+  - `requireAuth()` - Middleware for protected routes
+  - `validateProposalToken()` - Verify proposal access tokens
+
+### Module: Proposal Management (`src/app/api/proposals/`)
+- **Maps to capability**: Proposal Creation & Authoring
+- **Responsibility**: CRUD operations for proposals and templates
+- **File structure**:
+  ```
+  proposals/
+  ├── route.ts           # List/create proposals
+  ├── [id]/route.ts      # Get/update/delete proposal
+  └── generate-link/route.ts
+  ```
+- **Exports**: REST API endpoints
+
+### Module: Analytics Engine (`src/lib/analytics/`)
+- **Maps to capability**: Analytics & Event Tracking
+- **Responsibility**: Track, store, and aggregate proposal engagement
+- **File structure**:
+  ```
+  analytics/
+  ├── tracker.ts         # Client-side event tracking
+  └── aggregator.ts      # Server-side metric aggregation
+  ```
+- **Exports**:
+  - `trackEvent()` - Log client interaction
+  - `aggregateMetrics()` - Calculate summary stats
+  - `getProposalAnalytics()` - Fetch analytics for proposal
+
+### Module: Payment Integration (`src/lib/stripe/`)
+- **Maps to capability**: Payment Integration
+- **Responsibility**: Stripe checkout and webhook handling
+- **File structure**:
+  ```
+  stripe/
+  ├── client.ts          # Stripe session creation
+  └── webhooks.ts        # Webhook verification & processing
+  ```
+- **Exports**:
+  - `createCheckoutSession()` - Generate payment link
+  - `handleWebhook()` - Process Stripe events
+  - `getPaymentStatus()` - Check payment state
+
+### Module: Signature System (`src/components/proposal/SignatureCanvas.tsx`)
+- **Maps to capability**: E-Signature Capture
+- **Responsibility**: Capture and store electronic signatures
+- **Exports**:
+  - `SignatureCanvas` - React component for signature input
+  - `saveSignature()` - Store signature with audit trail
+  - `generateSignedPDF()` - Create PDF snapshot
+
+### Module: Brand System (`src/components/ui/`)
+- **Maps to capability**: Brand Styling & Theming
+- **Responsibility**: Implement Avyra design system
+- **File structure**:
+  ```
+  ui/
+  ├── Button.tsx         # Primary/secondary buttons
+  ├── Card.tsx           # Card component
+  ├── Input.tsx          # Form inputs
+  ├── Badge.tsx          # Status badges
+  └── index.ts           # Barrel exports
+  ```
+- **Exports**: Styled React components following minibrandguide.txt
+
+### Module: Proposal Renderer (`src/components/proposal/ProposalRenderer.tsx`)
+- **Maps to capability**: Client Proposal Experience
+- **Responsibility**: Render proposals as interactive web pages
+- **Exports**:
+  - `ProposalRenderer` - Main proposal display component
+  - `PricingTable` - Pricing section component
+  - `PaymentButton` - Stripe checkout trigger
+
+### Module: Dashboard (`src/app/(admin)/dashboard/`)
+- **Maps to capability**: Admin Dashboard & Reporting
+- **Responsibility**: Admin interface for proposal management
+- **File structure**:
+  ```
+  dashboard/
+  ├── page.tsx           # Main dashboard view
+  └── components/
+      ├── ProposalPipeline.tsx
+      └── MetricsOverview.tsx
+  ```
+
+</structural-decomposition>
+
+---
+
+<dependency-graph>
+## Dependency Chain
+
+### Foundation Layer (Phase 0)
+No dependencies - these are built first.
+
+- **Brand System** (`src/components/ui/`, `src/styles/brand.css`): Provides design tokens, UI components, and styling utilities based on minibrandguide.txt
+- **Database Schema** (`supabase/migrations/`): Defines tables, RLS policies, and storage buckets
+- **Type Definitions** (`src/types/`): TypeScript interfaces for proposals, analytics, users
+- **Utilities** (`src/lib/utils/`): Token generation, validation helpers, formatting functions
+
+### Authentication Layer (Phase 1)
+- **Authentication Module** (`src/lib/supabase/`): Depends on [Database Schema, Type Definitions]
+- **Auth Routes** (`src/app/(auth)/`): Depends on [Authentication Module, Brand System]
+
+### Core Data Layer (Phase 2)
+- **Proposal API** (`src/app/api/proposals/`): Depends on [Authentication Module, Type Definitions, Utilities]
+- **Template Management** (within Proposal API): Depends on [Database Schema, Authentication Module]
+- **Analytics Tracker** (`src/lib/analytics/tracker.ts`): Depends on [Type Definitions, Utilities]
+
+### Integration Layer (Phase 3)
+- **Stripe Integration** (`src/lib/stripe/`): Depends on [Proposal API, Type Definitions, Utilities]
+- **Signature System** (`src/components/proposal/SignatureCanvas.tsx`): Depends on [Proposal API, Brand System]
+- **AI Transcript Parser** (`src/lib/ai/transcript-parser.ts`): Depends on [Type Definitions, Utilities]
+
+### Presentation Layer (Phase 4)
+- **Proposal Renderer** (`src/components/proposal/ProposalRenderer.tsx`): Depends on [Brand System, Type Definitions, Analytics Tracker]
+- **Public Proposal Page** (`src/app/p/[token]/`): Depends on [Proposal Renderer, Signature System, Stripe Integration, Analytics Tracker]
+- **Proposal Form** (`src/components/forms/ProposalForm.tsx`): Depends on [Brand System, AI Transcript Parser, Proposal API]
+
+### Admin Layer (Phase 5)
+- **Analytics Aggregator** (`src/lib/analytics/aggregator.ts`): Depends on [Analytics Tracker, Database Schema]
+- **Dashboard Components** (`src/components/dashboard/`): Depends on [Brand System, Analytics Aggregator, Type Definitions]
+- **Admin Routes** (`src/app/(admin)/`): Depends on [Dashboard Components, Proposal Form, Authentication Module]
+
+</dependency-graph>
+
+---
+
+<implementation-roadmap>
+## Development Phases
+
+### Phase 0: Foundation & Infrastructure
+**Goal**: Establish project foundation with database, auth, and design system
+
+**Entry Criteria**: Clean Next.js project initialized
+
+**Tasks**:
+- [ ] Configure Supabase project and environment variables (depends on: none)
+  - Acceptance criteria: Supabase client connects successfully, environment variables loaded
+  - Test strategy: Test connection in development environment
+
+- [ ] Create database schema with migrations (depends on: none)
+  - Tables: users, proposals, proposal_templates, proposal_sections, proposal_events, signatures, payments
+  - RLS policies for admin vs public access
+  - Storage buckets for media and PDFs
+  - Acceptance criteria: All tables created, RLS enforced, storage accessible
+  - Test strategy: Run migrations, verify table structure, test RLS policies
+
+- [ ] Implement brand design system from minibrandguide.txt (depends on: none)
+  - Configure Tailwind with Avyra color palette:
+    * Background colors: #08090A (main), #101011 (card), #111213 (card hover)
+    * Text colors: #F7F8F8 (primary), rgba(247, 248, 248, 0.7) (secondary), #8A8F98 (muted)
+    * Accent colors: #f2c6a6 (primary copper), #bc845b (secondary copper)
+    * Border colors: #1B1C1D (card), #27272A (button), #242424 (subtle)
+    * State colors: #22c55e (success), #ef4444 (error), #F59E0B (warning)
+  - Set up typography system:
+    * Primary font: Inter
+    * Secondary font: Instrument Serif (for special headings)
+    * Heading gradient style (radial gradient from #D5DBE6 to #04070D with background-clip: text)
+    * Font sizes: 56px hero (desktop), 44px section heading, 24px subheading, 16px body
+    * Font weights: 400 (regular), 500 (medium), 600 (semibold), 700 (bold)
+  - Define spacing scale in Tailwind: 4px, 8px, 16px, 24px, 32px, 48px, 64px, 96px
+  - Create globals.css with:
+    * Custom scrollbar styling (#1B1C1D thumb, #8A8F98 hover)
+    * Shadow utilities (.shadow-linear, .shadow-linear-lg, .shadow-linear-xl)
+    * Gradient definitions for hero backgrounds and buttons
+  - Build base UI components following exact specifications:
+    * Button (Primary): Copper gradient (linear-gradient #f2c6a6 to #bc845b), 8px radius, 12px/32px padding, 50px height, #3a3a3a text, -0.16px tracking
+    * Button (Secondary): #28282C background, #3E3E44 border, 10px radius, 10px/17px padding, 15px text, 600 weight
+    * Card: #101011 background, #1B1C1D border, 30px radius (large) / 12-16px (small), 32-48px padding (desktop) / 24px (mobile)
+    * Input: #101011 background, #1B1C1D border, 8px radius, 13px/16px padding, 15px text, #8A8F98 placeholder
+    * Badge: #1a1b20 background, full radius, 8px/16px padding, 8px gradient dot, #f2c6a6 text, 14px uppercase
+  - Implement hover states:
+    * Buttons: scale(1.02) or color shift
+    * Cards: translateY(-2px) + border color change to #1E1F20
+    * Links: color shift to #f4d0b4
+  - Acceptance criteria: 
+    * All brand colors available as Tailwind classes
+    * Components render with exact styling from minibrandguide.txt
+    * Hover states match specifications
+    * Typography hierarchy correct
+    * Responsive breakpoints work (mobile < 640px, tablet 640-1024px, desktop > 1024px)
+  - Test strategy: 
+    * Visual regression tests comparing against minibrandguide.txt examples
+    * Storybook stories for each component with all states
+    * Test on mobile (375px), tablet (768px), desktop (1280px) breakpoints
+    * Verify color contrast meets WCAG AA standards
+
+- [ ] Define TypeScript types for core entities (depends on: database schema)
+  - Proposal, Template, Section, Event, User types
+  - Database types generated from Supabase
+  - Acceptance criteria: Types match database schema, no type errors
+  - Test strategy: Type checking passes, types exported correctly
+
+- [ ] Create utility functions (depends on: none)
+  - Token generation (cryptographically secure)
+  - Validation helpers
+  - Date formatting
+  - Acceptance criteria: Utilities tested and exported
+  - Test strategy: Unit tests for each utility function
+
+**Exit Criteria**: 
+- Supabase connected and schema deployed
+- Brand system implemented with all components rendering correctly
+- Type definitions complete and validated
+- All foundation utilities tested
+
+**Delivers**: Solid foundation for building features
+
+---
+
+### Phase 1: Authentication & Authorization
+**Goal**: Secure admin access and proposal token validation
+
+**Entry Criteria**: Phase 0 complete
+
+**Tasks**:
+- [ ] Implement Supabase authentication module (depends on: [database schema, type definitions])
+  - Client-side and server-side Supabase clients
+  - Session management
+  - Auth middleware for protected routes
+  - Acceptance criteria: Admins can sign up/login, sessions persist, protected routes enforce auth
+  - Test strategy: Integration tests for auth flows, test middleware protection
+
+- [ ] Build login/signup pages (depends on: [authentication module, brand system])
+  - Login form with email/password using .input-linear class
+  - Signup form with validation
+  - Apply Avyra brand styling:
+    * Dark background (#08090A)
+    * Card container with #101011 background, #1B1C1D border, 30px radius
+    * Primary copper gradient button for submit
+    * Secondary button for cancel/back (transparent background on auth pages)
+    * Error states with #ef4444 color, #1a1213 background, #3d2022 border
+    * Success states with #22c55e color, #131a14 background, #1f3122 border
+  - Implement focus states: 2px solid #E6E6E6 outline
+  - Add loading spinner (copper colored) for async auth
+  - Acceptance criteria: Forms functional, validation works, styling exactly matches brand guide
+  - Test strategy: E2E tests for auth flows, visual regression tests for styling, accessibility tests for focus states
+
+- [ ] Implement proposal token validation (depends on: [authentication module, utilities])
+  - Generate secure tokens for proposal links
+  - Validate tokens on access
+  - Handle expiration
+  - Acceptance criteria: Tokens work for valid proposals, expired tokens rejected
+  - Test strategy: Unit tests for token generation/validation, integration tests for access control
+
+**Exit Criteria**: 
+- Admins can authenticate securely
+- Proposal tokens provide secure, time-limited access
+- All auth flows tested and working
+
+**Delivers**: Secure access control for platform
+
+---
+
+### Phase 2: Proposal Core (Templates & Creation)
+**Goal**: Enable admins to create and manage proposal templates and proposals
+
+**Entry Criteria**: Phase 1 complete
+
+**Tasks**:
+- [ ] Build proposal template CRUD API (depends on: [proposal API, authentication module])
+  - Create, read, update, delete templates
+  - Store in Supabase
+  - Acceptance criteria: Templates can be managed via API, RLS enforced
+  - Test strategy: API integration tests for all CRUD operations
+
+- [ ] Create template management UI (depends on: [template API, brand system])
+  - List templates
+  - Create/edit template form
+  - Section library management
+  - Acceptance criteria: Admins can manage templates through UI
+  - Test strategy: E2E tests for template workflows
+
+- [ ] Build proposal creation form (depends on: [proposal API, brand system])
+  - Manual data entry fields
+  - Template selection
+  - Section toggle controls
+  - Acceptance criteria: Admins can create proposals with all required fields
+  - Test strategy: Form validation tests, E2E creation flow
+
+- [ ] Implement proposal CRUD API (depends on: [authentication module, type definitions, utilities])
+  - Create, read, update, delete proposals
+  - Link to templates
+  - Store in Supabase
+  - Acceptance criteria: Proposals persist correctly, relationships maintained
+  - Test strategy: API integration tests, database constraint tests
+
+- [ ] Add proposal link generation (depends on: [proposal API, utilities])
+  - Generate secure tokens
+  - Create shareable URLs
+  - Store token mappings
+  - Acceptance criteria: Links generated correctly, tokens map to proposals
+  - Test strategy: Unit tests for link generation, integration tests for token resolution
+
+**Exit Criteria**: 
+- Admins can create and manage templates
+- Admins can create proposals manually
+- Proposals have shareable links
+
+**Delivers**: Core proposal authoring capability
+
+---
+
+### Phase 3: Client Proposal Experience
+**Goal**: Beautiful, interactive proposal pages for clients
+
+**Entry Criteria**: Phase 2 complete
+
+**Tasks**:
+- [ ] Build proposal renderer component (depends on: [brand system, type definitions])
+  - Responsive layout with mobile-first approach
+  - Section rendering with toggles (smooth transitions, 0.3s ease)
+  - Media embedding with lazy loading
+  - Apply Avyra brand styling:
+    * Dark background (#08090A) with subtle gradient (135deg, #08090A 0%, rgba(97, 106, 115, 0.1) 40%, #08090A 100%)
+    * Section cards with #101011 background, #1B1C1D border, 16px radius
+    * Hero heading with gradient text effect (radial-gradient from #D5DBE6 to #04070D, background-clip: text)
+    * Section headings: 44px desktop / 32px mobile, line-height 1.2
+    * Body text: 16px, line-height 1.6, #F7F8F8 color
+    * Generous white space (section padding: 80-120px desktop / 40-60px mobile)
+    * Container max-width: 1280px with 64px padding (desktop) / 16px (mobile)
+  - Implement smooth page transitions and fade-in animations (Framer Motion)
+  - Add badge component for section labels (#1a1b20 background, copper gradient dot)
+  - Acceptance criteria: Proposals render beautifully on all devices, sections respect toggles, animations subtle and smooth
+  - Test strategy: Visual regression tests at 375px/768px/1280px, animation performance tests, accessibility tests
+
+- [ ] Create pricing table component (depends on: [brand system])
+  - Line item display in table format
+  - Total calculations with visual hierarchy
+  - Currency formatting (USD default)
+  - Apply Avyra brand styling:
+    * Table with #101011 background, #1B1C1D borders
+    * Header row with #111213 background
+    * Text: #F7F8F8 (primary), #8A8F98 (muted for descriptions)
+    * Total row emphasized with copper accent color (#f2c6a6)
+    * Hover state on rows: #111213 background
+    * 16px font for line items, 24px font for total (semibold)
+  - Responsive: stack on mobile, table on desktop
+  - Acceptance criteria: Pricing displays correctly, calculations accurate, styling matches brand guide
+  - Test strategy: Unit tests for calculations, visual tests for layout at all breakpoints
+
+- [ ] Implement public proposal page (depends on: [proposal renderer, proposal token validation])
+  - Token-based access
+  - Server-side rendering for performance
+  - Acceptance criteria: Clients can access proposals via link, unauthorized access blocked
+  - Test strategy: E2E tests for access flows, performance tests
+
+**Exit Criteria**: 
+- Clients can view proposals via secure links
+- Proposals are beautiful and responsive
+- All sections render correctly
+
+**Delivers**: Client-facing proposal experience
+
+---
+
+### Phase 4: E-Signature & Payment
+**Goal**: Enable clients to sign proposals and pay via Stripe
+
+**Entry Criteria**: Phase 3 complete
+
+**Tasks**:
+- [ ] Build signature canvas component (depends on: [brand system])
+  - Typed signature input with .input-linear styling
+  - Canvas drawing (optional future enhancement)
+  - Signature preview with copper accent border
+  - Apply Avyra brand styling:
+    * Card container: #101011 background, #1B1C1D border, 16px radius, 32px padding
+    * Input field: #101011 background, #1B1C1D border, 8px radius
+    * Preview area: #08090A background with copper gradient border (1px)
+    * Submit button: Primary copper gradient button
+    * Label text: #F7F8F8, 16px, medium weight
+  - Add success state after signature capture (green checkmark with #22c55e)
+  - Acceptance criteria: Clients can enter signatures, preview looks good, styling matches brand guide
+  - Test strategy: Component tests, visual tests, mobile touch tests
+
+- [ ] Implement signature storage API (depends on: [proposal API, utilities])
+  - Save signature data
+  - Capture metadata (timestamp, IP)
+  - Update proposal status
+  - Acceptance criteria: Signatures stored with audit trail, status updates correctly
+  - Test strategy: API integration tests, audit trail verification
+
+- [ ] Integrate Stripe checkout (depends on: [proposal API, type definitions, utilities])
+  - Create checkout sessions
+  - Generate payment links
+  - Link to proposals
+  - Acceptance criteria: Checkout sessions created correctly, links work
+  - Test strategy: Integration tests with Stripe test mode
+
+- [ ] Build Stripe webhook handler (depends on: [Stripe integration, proposal API])
+  - Verify webhook signatures
+  - Process payment events
+  - Update proposal payment status
+  - Acceptance criteria: Webhooks processed correctly, statuses updated
+  - Test strategy: Webhook simulation tests, status update verification
+
+- [ ] Add payment button to proposal page (depends on: [Stripe integration, proposal renderer])
+  - Display payment CTA as primary copper gradient button
+  - Apply Avyra brand styling:
+    * Container with 2px padding, 8px radius, radial-gradient glow (#FFE1C6)
+    * Button: linear-gradient from #f2c6a6 to #bc845b, 50px height, 12px/32px padding
+    * Text: #3a3a3a, 16px, semibold, -0.16px tracking
+    * Icon: Arrow right (22x22px)
+    * Hover: gradient from #f4c8a8 to #be865d, scale(1.02)
+    * Loading state: copper colored spinner, button disabled
+  - Show confirmation with success state styling (#22c55e background tint)
+  - Add toast notification for payment success (card style with shadow-linear-lg)
+  - Acceptance criteria: Button triggers Stripe checkout, states handled correctly, styling matches brand guide exactly
+  - Test strategy: E2E payment flow tests (test mode), visual tests for all states, interaction tests
+
+- [ ] Implement PDF snapshot generation (depends on: [signature system, proposal renderer])
+  - Render proposal as PDF
+  - Embed signature
+  - Store in Supabase Storage
+  - Acceptance criteria: PDFs generated correctly, signatures embedded
+  - Test strategy: PDF generation tests, visual comparison
+
+**Exit Criteria**: 
+- Clients can sign proposals electronically
+- Clients can pay via Stripe
+- Signed PDFs generated and stored
+
+**Delivers**: Complete proposal-to-payment workflow
+
+---
+
+### Phase 5: Analytics & Tracking
+**Goal**: Track client engagement and provide visibility to admins
+
+**Entry Criteria**: Phase 4 complete
+
+**Tasks**:
+- [ ] Implement client-side event tracking (depends on: [type definitions, utilities])
+  - Track page views
+  - Track interactions (clicks, scrolls)
+  - Track time on page
+  - Batch send events to API
+  - Acceptance criteria: Events captured and sent correctly
+  - Test strategy: Event emission tests, API payload verification
+
+- [ ] Build analytics API endpoints (depends on: [analytics tracker, proposal API])
+  - Receive and store events
+  - Query events for proposals
+  - Acceptance criteria: Events stored in database, queryable by proposal
+  - Test strategy: API integration tests, database query tests
+
+- [ ] Create metrics aggregation system (depends on: [analytics tracker, database schema])
+  - Scheduled aggregation jobs (Supabase Functions)
+  - Calculate KPIs (views, conversion, avg time)
+  - Materialized views for performance
+  - Acceptance criteria: Metrics calculated correctly, aggregation runs on schedule
+  - Test strategy: Aggregation logic tests, scheduled job verification
+
+- [ ] Add analytics tracking to proposal page (depends on: [analytics tracker, public proposal page])
+  - Emit events on load and interactions
+  - Track signature and payment events
+  - Acceptance criteria: All key events tracked
+  - Test strategy: E2E tests verifying event emission
+
+**Exit Criteria**: 
+- All client interactions tracked
+- Events stored and queryable
+- Metrics aggregated for dashboard
+
+**Delivers**: Complete analytics infrastructure
+
+---
+
+### Phase 6: Admin Dashboard & Reporting
+**Goal**: Centralized interface for admins to manage proposals and view analytics
+
+**Entry Criteria**: Phase 5 complete
+
+**Tasks**:
+- [ ] Build proposal pipeline view (depends on: [dashboard components, proposal API, authentication module])
+  - List proposals by status
+  - Filter and search
+  - Status indicators
+  - Acceptance criteria: Admins can view all proposals, filter works
+  - Test strategy: E2E tests for pipeline interactions
+
+- [ ] Create metrics overview cards (depends on: [brand system, analytics aggregator])
+  - Total pipeline value
+  - Closed revenue
+  - Acceptance rate
+  - Avg proposal value
+  - Acceptance criteria: Metrics display correctly, update in real-time
+  - Test strategy: Component tests with mock data, integration tests with real data
+
+- [ ] Implement individual proposal analytics page (depends on: [dashboard components, analytics aggregator])
+  - View timeline
+  - Interaction log
+  - Conversion funnel
+  - Acceptance criteria: Detailed analytics visible for each proposal
+  - Test strategy: E2E tests for analytics page
+
+- [ ] Add real-time notifications (depends on: [analytics tracker, dashboard])
+  - In-app notification system
+  - Alert on key events (viewed, signed, paid)
+  - Acceptance criteria: Notifications appear for events, can be dismissed
+  - Test strategy: Notification trigger tests, UI interaction tests
+
+- [ ] Build dashboard layout (depends on: [dashboard components, authentication module, brand system])
+  - Navigation sidebar/header with Avyra styling:
+    * Dark background (#08090A)
+    * Active nav items with copper accent (#f2c6a6)
+    * Hover states with subtle background (#111213)
+    * Logo/branding with Instrument Serif font
+  - Responsive layout (sidebar on desktop, hamburger menu on mobile)
+  - Apply Avyra branding throughout:
+    * Main content area: #08090A background
+    * Grid layout with 24-32px gap
+    * Cards for metrics: #101011 background, #1B1C1D border, 30px radius, shadow-linear-lg
+    * Consistent spacing using defined scale (16px, 24px, 32px, 48px)
+    * All interactive elements with smooth transitions (0.2s ease)
+  - Add exit/logout button (transparent background, #242424 border, circular, 6-12px padding)
+  - Implement loading states with copper spinner
+  - Acceptance criteria: Dashboard accessible to admins, layout responsive, styling exactly matches brand guide
+  - Test strategy: Layout tests at all breakpoints, navigation tests, visual regression tests
+
+**Exit Criteria**: 
+- Admins have full visibility into proposals
+- Analytics displayed clearly
+- Notifications working
+
+**Delivers**: Complete admin dashboard
+
+---
+
+### Phase 7: Advanced Features & Polish
+**Goal**: Transcript parsing, template duplication, and UX enhancements
+
+**Entry Criteria**: Phase 6 complete
+
+**Tasks**:
+- [ ] Implement AI transcript parser (depends on: [type definitions, utilities])
+  - Integrate LLM API (OpenAI/Anthropic)
+  - Parse transcript text
+  - Extract entities (client, budget, requirements)
+  - Acceptance criteria: Transcripts parsed correctly, entities extracted
+  - Test strategy: Parser tests with sample transcripts
+
+- [ ] Add transcript import to proposal form (depends on: [AI transcript parser, proposal form])
+  - Textarea for transcript paste
+  - Parse button
+  - Pre-populate form fields
+  - Acceptance criteria: Transcripts can be imported, form auto-populated
+  - Test strategy: E2E tests for import flow
+
+- [ ] Implement template duplication (depends on: [template API])
+  - Clone template with all sections
+  - Assign new IDs
+  - Acceptance criteria: Templates duplicated correctly
+  - Test strategy: Duplication tests, data integrity verification
+
+- [ ] Add loading states and error handling (depends on: [brand system, all features])
+  - Loading spinners (copper colored #f2c6a6, animated rotation)
+  - Error messages with helpful hints:
+    * Error color: #ef4444
+    * Error background: #1a1213
+    * Error border: #3d2022
+    * Include error icon
+    * 16px text with helpful hint below in #8A8F98
+  - Success messages:
+    * Success color: #22c55e
+    * Success background: #131a14
+    * Success border: #1f3122
+    * Include checkmark icon
+    * Encouraging message text
+  - Toast notifications:
+    * Card style: #101011 background, #1B1C1D border, 12px radius
+    * Shadow: shadow-linear-lg
+    * Slide-in animation from top-right
+    * Auto-dismiss after 5 seconds
+    * Close button with X icon (14px)
+  - Modal overlays:
+    * Backdrop: black/50 with backdrop-blur
+    * Modal card: #101011 background, 30px radius, 48px padding
+    * Exit button: absolute top-right, transparent background, #242424 border, circular
+  - Acceptance criteria: All async actions have loading states, errors handled gracefully with brand styling, animations smooth
+  - Test strategy: Error scenario tests, loading state verification, animation performance tests, accessibility tests
+
+- [ ] Optimize performance (depends on: [all features])
+  - Image lazy loading
+  - Code splitting
+  - Database query optimization
+  - Caching strategy
+  - Acceptance criteria: Page load times < 2s, interactions smooth
+  - Test strategy: Performance tests, Lighthouse audits
+
+**Exit Criteria**: 
+- Transcript parsing working
+- All UX polish complete
+- Performance optimized
+
+**Delivers**: Production-ready platform
+
+</implementation-roadmap>
+
+---
+
+<test-strategy>
+## Test Pyramid
+
+```
+        /\
+       /E2E\       ← 10% (Critical user flows, Playwright)
+      /------\
+     /Integration\ ← 30% (API routes, database, Stripe/Supabase integration)
+    /------------\
+   /  Unit Tests  \ ← 60% (Components, utilities, business logic)
+  /----------------\
+```
+
+## Coverage Requirements
+- Line coverage: 80% minimum
+- Branch coverage: 75% minimum
+- Function coverage: 85% minimum
+- Critical paths (auth, payment, signature): 95% minimum
+
+## Critical Test Scenarios
+
+### Authentication Module
+**Happy path**:
+- User signs up with valid credentials → Account created, session established
+- User logs in with correct password → Session established, redirected to dashboard
+
+**Edge cases**:
+- Duplicate email signup → Error message displayed
+- Invalid email format → Validation error
+- Expired session → Redirected to login
+
+**Error cases**:
+- Wrong password → Clear error message
+- Network failure during auth → Retry mechanism, error handling
+
+**Integration points**:
+- Supabase auth service → Session tokens valid
+- Protected routes → Unauthorized access blocked
+
+### Proposal Creation
+**Happy path**:
+- Admin fills form, creates proposal → Proposal saved, link generated
+- Admin imports transcript → Form pre-populated correctly
+
+**Edge cases**:
+- Empty required fields → Validation errors
+- Very long proposal content → Handled without truncation
+- Special characters in content → Properly escaped
+
+**Error cases**:
+- Database write failure → Error message, data not lost
+- Token generation failure → Retry mechanism
+
+**Integration points**:
+- Template system → Sections populated correctly
+- Link generation → Tokens valid and unique
+
+### E-Signature
+**Happy path**:
+- Client enters signature, submits → Signature saved with timestamp and IP
+- Signed PDF generated → PDF stored in Supabase Storage
+
+**Edge cases**:
+- Empty signature → Validation error
+- Signature too large → Handled gracefully
+
+**Error cases**:
+- Network failure during submission → Retry mechanism
+- PDF generation failure → Fallback to signature data only
+
+**Integration points**:
+- Proposal status update → Status changes to "Signed"
+- Analytics tracking → Signature event logged
+
+### Stripe Payment
+**Happy path**:
+- Client clicks pay, completes Stripe checkout → Payment recorded, proposal status updated
+- Webhook received → Payment status updated in database
+
+**Edge cases**:
+- Payment cancelled → Status remains unchanged
+- Multiple payment attempts → Only successful payment counted
+
+**Error cases**:
+- Webhook signature invalid → Webhook rejected
+- Network failure during checkout → Clear error message
+
+**Integration points**:
+- Stripe API → Checkout sessions created correctly
+- Webhook processing → Status updates atomic
+
+### Analytics Tracking
+**Happy path**:
+- Client views proposal → View event logged with timestamp
+- Client clicks section → Interaction event logged
+- Admin views dashboard → Metrics displayed correctly
+
+**Edge cases**:
+- Rapid page refreshes → Deduplicated
+- Very long session → Time tracked accurately
+
+**Error cases**:
+- Analytics API unavailable → Events queued, retried later
+- Invalid event data → Validation error, event rejected
+
+**Integration points**:
+- Event aggregation → Metrics calculated correctly
+- Real-time updates → Dashboard reflects latest data
+
+## Test Generation Guidelines
+
+- Use Playwright for E2E tests, focusing on critical user journeys
+- Mock Stripe API in tests using Stripe test mode
+- Use Supabase local development for integration tests
+- Test responsive design at mobile (375px), tablet (768px), and desktop (1280px) breakpoints
+- **CRITICAL: Verify brand styling matches minibrandguide.txt in visual regression tests**
+  * Every UI component must be tested against brand specifications
+  * Color values must match exactly (use hex comparison)
+  * Typography hierarchy must be verified (font sizes, weights, line heights)
+  * Spacing must follow the defined scale (4px, 8px, 16px, 24px, 32px, 48px, 64px, 96px)
+  * Hover states and transitions must match specifications
+  * Copper gradient buttons must use exact gradient values
+  * All shadows must use defined shadow utilities (.shadow-linear, .shadow-linear-lg, .shadow-linear-xl)
+- Test RLS policies by attempting unauthorized access
+- Simulate webhook events for Stripe integration tests
+- Test analytics aggregation with time-series data
+- Verify accessibility (keyboard navigation, ARIA labels, color contrast per WCAG AA)
+- **Brand Compliance Checklist for Every Component:**
+  * [ ] Colors match minibrandguide.txt exactly
+  * [ ] Typography uses Inter/Instrument Serif with correct sizes
+  * [ ] Spacing follows defined scale
+  * [ ] Hover states implemented correctly
+  * [ ] Transitions are smooth (0.2s-0.3s ease)
+  * [ ] Responsive breakpoints work (mobile < 640px, tablet 640-1024px, desktop > 1024px)
+  * [ ] Dark theme maintained (#08090A background, #F7F8F8 text)
+  * [ ] Copper accent used appropriately (#f2c6a6)
+
+</test-strategy>
+
+---
+
+<architecture>
+## System Components
+
+**Frontend**: Next.js 14+ with App Router, React Server Components, TypeScript
+**Backend**: Next.js API routes, Supabase Edge Functions
+**Database**: Supabase (PostgreSQL) with Row Level Security
+**Storage**: Supabase Storage for media and PDFs
+**Authentication**: Supabase Auth
+**Payments**: Stripe Checkout + Webhooks
+**AI**: OpenAI/Anthropic API for transcript parsing
+**Styling**: Tailwind CSS configured with Avyra brand system
+**Deployment**: Vercel (frontend), Supabase (backend/database)
+
+## Data Models
+
+### Core Tables
+
+**users**
+- id (uuid, primary key)
+- email (text, unique)
+- role (enum: admin, viewer)
+- created_at (timestamp)
+
+**proposal_templates**
+- id (uuid, primary key)
+- name (text)
+- description (text)
+- created_by (uuid, foreign key → users)
+- created_at (timestamp)
+- updated_at (timestamp)
+
+**proposal_sections**
+- id (uuid, primary key)
+- template_id (uuid, foreign key → proposal_templates)
+- type (enum: intro, services, pricing, terms, custom)
+- title (text)
+- content (jsonb) // Rich text content
+- order (integer)
+- is_toggleable (boolean)
+
+**proposals**
+- id (uuid, primary key)
+- template_id (uuid, foreign key → proposal_templates)
+- client_name (text)
+- client_email (text)
+- status (enum: draft, sent, viewed, signed, paid)
+- token (text, unique) // For secure access
+- token_expires_at (timestamp)
+- total_amount (decimal)
+- created_by (uuid, foreign key → users)
+- created_at (timestamp)
+- updated_at (timestamp)
+- sent_at (timestamp)
+- viewed_at (timestamp)
+- signed_at (timestamp)
+- paid_at (timestamp)
+
+**proposal_section_instances**
+- id (uuid, primary key)
+- proposal_id (uuid, foreign key → proposals)
+- section_id (uuid, foreign key → proposal_sections)
+- is_enabled (boolean) // Toggle state
+- custom_content (jsonb) // Override template content
+
+**signatures**
+- id (uuid, primary key)
+- proposal_id (uuid, foreign key → proposals)
+- signature_data (text) // Base64 image or typed name
+- signer_ip (inet)
+- signer_user_agent (text)
+- signed_at (timestamp)
+- pdf_url (text) // Supabase Storage URL
+
+**payments**
+- id (uuid, primary key)
+- proposal_id (uuid, foreign key → proposals)
+- stripe_session_id (text, unique)
+- stripe_payment_intent_id (text)
+- amount (decimal)
+- status (enum: pending, succeeded, failed, cancelled)
+- created_at (timestamp)
+- paid_at (timestamp)
+
+**proposal_events**
+- id (uuid, primary key)
+- proposal_id (uuid, foreign key → proposals)
+- event_type (enum: view, interaction, signature, payment)
+- event_data (jsonb) // Metadata (section clicked, time spent, etc.)
+- ip_address (inet)
+- user_agent (text)
+- created_at (timestamp)
+
+**aggregated_metrics** (materialized view, refreshed hourly)
+- date (date)
+- total_proposals (integer)
+- total_views (integer)
+- total_signed (integer)
+- total_paid (integer)
+- total_revenue (decimal)
+- avg_proposal_value (decimal)
+- acceptance_rate (decimal)
+
+## Technology Stack
+
+**Decision: Next.js App Router with Server Components**
+- **Rationale**: 
+  - Server-side rendering for proposal pages improves SEO and initial load time
+  - Server Components reduce client bundle size
+  - API routes co-located with frontend code
+  - Built-in TypeScript support
+- **Trade-offs**: 
+  - Learning curve for App Router paradigm
+  - Some client-side libraries require adaptation
+- **Alternatives considered**: 
+  - Remix (less mature ecosystem)
+  - SvelteKit (smaller community)
+
+**Decision: Supabase for Backend**
+- **Rationale**: 
+  - PostgreSQL with built-in auth and storage
+  - Row Level Security for fine-grained access control
+  - Real-time subscriptions for live updates
+  - Edge Functions for serverless compute
+  - Generous free tier
+- **Trade-offs**: 
+  - Vendor lock-in (mitigated by PostgreSQL compatibility)
+  - Less control than self-hosted
+- **Alternatives considered**: 
+  - Firebase (less SQL-friendly)
+  - AWS Amplify (more complex)
+  - Self-hosted PostgreSQL (more ops overhead)
+
+**Decision: Stripe for Payments**
+- **Rationale**: 
+  - Industry-standard payment processing
+  - Excellent documentation and developer experience
+  - Checkout Sessions simplify PCI compliance
+  - Robust webhook system
+- **Trade-offs**: 
+  - Transaction fees (2.9% + 30¢)
+  - Requires Stripe account for clients
+- **Alternatives considered**: 
+  - PayPal (less developer-friendly)
+  - Square (less feature-rich)
+
+**Decision: Tailwind CSS with Brand System**
+- **Rationale**: 
+  - Utility-first approach matches component-based architecture
+  - Easy to implement design system from minibrandguide.txt
+  - Excellent performance (purges unused styles)
+  - Great TypeScript support
+- **Trade-offs**: 
+  - Verbose class names
+  - Learning curve for utility classes
+- **Alternatives considered**: 
+  - CSS Modules (less flexible)
+  - Styled Components (runtime overhead)
+
+**Decision: OpenAI/Anthropic for Transcript Parsing**
+- **Rationale**: 
+  - State-of-the-art language understanding
+  - Structured output for entity extraction
+  - Reasonable pricing for low-volume use
+- **Trade-offs**: 
+  - API costs per request
+  - Latency (1-3 seconds per parse)
+  - Requires API key management
+- **Alternatives considered**: 
+  - Open-source models (lower quality)
+  - Manual parsing (no AI benefit)
+
+</architecture>
+
+---
+
+<risks>
+## Technical Risks
+
+**Risk**: Stripe webhook reliability
+- **Impact**: High - payment status updates could be missed
+- **Likelihood**: Low - Stripe has high uptime, but network issues possible
+- **Mitigation**: 
+  - Implement webhook retry logic
+  - Poll Stripe API as backup for critical payments
+  - Log all webhook attempts for debugging
+- **Fallback**: Manual payment reconciliation dashboard for admins
+
+**Risk**: Supabase RLS policy complexity
+- **Impact**: High - security vulnerability if policies incorrect
+- **Likelihood**: Medium - RLS can be tricky to get right
+- **Mitigation**: 
+  - Thorough testing of all access patterns
+  - Peer review of RLS policies
+  - Use Supabase policy templates as starting point
+- **Fallback**: Additional application-layer authorization checks
+
+**Risk**: PDF generation performance
+- **Impact**: Medium - slow PDF generation could timeout
+- **Likelihood**: Medium - PDF rendering can be resource-intensive
+- **Mitigation**: 
+  - Use efficient PDF library (e.g., Puppeteer with optimizations)
+  - Generate PDFs asynchronously via background job
+  - Cache generated PDFs
+- **Fallback**: Provide HTML version if PDF fails
+
+**Risk**: Analytics data volume
+- **Impact**: Medium - high event volume could slow queries
+- **Likelihood**: Medium - depends on usage scale
+- **Mitigation**: 
+  - Use materialized views for aggregated metrics
+  - Implement data retention policy (archive old events)
+  - Index event tables appropriately
+- **Fallback**: Sample events if volume becomes unmanageable
+
+## Dependency Risks
+
+**Risk**: Stripe API changes
+- **Impact**: Medium - breaking changes could break payment flow
+- **Likelihood**: Low - Stripe maintains API versioning
+- **Mitigation**: 
+  - Pin Stripe API version
+  - Monitor Stripe changelog
+  - Test against Stripe test mode regularly
+- **Fallback**: Stripe provides migration guides for breaking changes
+
+**Risk**: Supabase service outage
+- **Impact**: High - entire platform unavailable
+- **Likelihood**: Low - Supabase has good uptime SLA
+- **Mitigation**: 
+  - Monitor Supabase status page
+  - Implement graceful degradation (read-only mode)
+  - Use Supabase's built-in backups
+- **Fallback**: Migrate to self-hosted PostgreSQL if necessary
+
+**Risk**: LLM API rate limits or cost overruns
+- **Impact**: Medium - transcript parsing unavailable or expensive
+- **Likelihood**: Medium - depends on usage volume
+- **Mitigation**: 
+  - Implement rate limiting on transcript parsing
+  - Cache parsed results
+  - Set budget alerts
+- **Fallback**: Manual data entry if AI parsing unavailable
+
+## Scope Risks
+
+**Risk**: Feature creep (advanced template builder, CRM integration, etc.)
+- **Impact**: High - delays MVP launch
+- **Likelihood**: High - easy to add "just one more feature"
+- **Mitigation**: 
+  - Strict MVP scope definition
+  - Defer non-essential features to post-launch
+  - User feedback drives feature prioritization
+- **Fallback**: Launch with minimal feature set, iterate based on usage
+
+**Risk**: Underestimating analytics complexity
+- **Impact**: Medium - analytics may take longer than expected
+- **Likelihood**: Medium - event tracking and aggregation can be tricky
+- **Mitigation**: 
+  - Start with simple metrics, add complexity iteratively
+  - Use proven patterns (event sourcing, materialized views)
+  - Allocate buffer time in Phase 5
+- **Fallback**: Launch with basic analytics, enhance post-MVP
+
+</risks>
+
+---
+
+<appendix>
+## References
+
+- Supabase Documentation: https://supabase.com/docs
+- Stripe Checkout Documentation: https://stripe.com/docs/payments/checkout
+- Next.js App Router: https://nextjs.org/docs/app
+- Tailwind CSS: https://tailwindcss.com/docs
+- Framer Motion: https://www.framer.com/motion/
+- **Avyra Brand Guide: minibrandguide.txt (in project root) - PRIMARY DESIGN REFERENCE**
+
+## Brand Guide Quick Reference
+
+**CRITICAL: All UI implementation must strictly follow minibrandguide.txt**
+
+### Color Palette (Primary)
+- Background Main: `#08090A`
+- Background Card: `#101011`
+- Background Card Hover: `#111213`
+- Text Primary: `#F7F8F8`
+- Text Secondary: `rgba(247, 248, 248, 0.7)`
+- Text Muted: `#8A8F98`
+- Primary Accent (Copper): `#f2c6a6`
+- Secondary Accent (Copper): `#bc845b`
+- Border Card: `#1B1C1D`
+- Border Button: `#27272A`
+- Success: `#22c55e`
+- Error: `#ef4444`
+- Warning: `#F59E0B`
+
+### Typography
+- Primary Font: Inter
+- Secondary Font: Instrument Serif (special headings only)
+- Hero Heading: 56px (desktop) / 32-44px (mobile)
+- Section Heading: 44px (desktop) / 32px (mobile)
+- Body Text: 16px
+- Line Height: 1.6 (body), 1.2 (headings)
+- Tracking: -0.16px (buttons)
+
+### Component Specifications
+- **Primary Button**: Copper gradient (#f2c6a6 → #bc845b), 8px radius, 50px height, 12px/32px padding
+- **Card**: #101011 bg, #1B1C1D border, 30px radius (large), 32-48px padding (desktop)
+- **Input**: #101011 bg, #1B1C1D border, 8px radius, 13px/16px padding
+- **Badge**: #1a1b20 bg, full radius, 8px/16px padding, copper gradient dot
+
+### Spacing Scale
+4px, 8px, 16px, 24px, 32px, 48px, 64px, 96px
+
+### Breakpoints
+- Mobile: < 640px
+- Tablet: 640px - 1024px
+- Desktop: > 1024px
+
+### Animations
+- Standard: 0.2s ease
+- Smooth: 0.3s ease
+- Framer Motion for page transitions
+- Fade in: opacity 0→1, y: 30→0, duration 0.8s
+
+**Note**: Refer to minibrandguide.txt for complete specifications including shadows, gradients, hover states, and accessibility requirements.
+
+## Glossary
+
+- **Proposal**: Interactive web-based business document with pricing, terms, signature, and payment
+- **Template**: Reusable proposal structure with predefined sections
+- **Section**: Modular content block within a proposal (intro, services, pricing, etc.)
+- **Token**: Secure, time-limited access credential for proposal links
+- **RLS**: Row Level Security - Supabase's database-level access control
+- **Webhook**: HTTP callback from Stripe to notify of payment events
+- **Materialized View**: Pre-computed database view for fast query performance
+
+## Open Questions
+
+1. Should we support multiple currencies in Stripe checkout? (Defer to post-MVP)
+2. Do we need email notifications for proposal events, or just in-app? (Start with in-app, add email later)
+3. Should proposal PDFs be automatically emailed to clients after signing? (Nice-to-have, not MVP)
+4. Do we need version history for proposals (track edits)? (Defer to post-MVP)
+5. Should we support collaborative editing (multiple admins on one proposal)? (No, single-author for MVP)
+6. What's the data retention policy for analytics events? (Keep 1 year, archive older)
+
+</appendix>
+

@@ -1,0 +1,757 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": "1",
+        "title": "Configure Supabase project and environment setup",
+        "description": "Set up Supabase project, install dependencies, and configure environment variables for database connection",
+        "details": "Install @supabase/supabase-js, @supabase/ssr, @supabase/auth-helpers-nextjs. Create Supabase project at https://supabase.com, obtain project URL and anon key. Set up .env.local with NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY. Create src/lib/supabase/client.ts and server.ts with proper configuration for Next.js App Router. Test connection in development environment.",
+        "testStrategy": "Verify Supabase client connects successfully, environment variables load correctly, no connection errors in browser console",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install Supabase dependencies and initialize project structure",
+            "description": "Install required Supabase npm packages and create the necessary directory structure for Supabase configuration files",
+            "dependencies": [],
+            "details": "Run npm install @supabase/supabase-js @supabase/ssr @supabase/auth-helpers-nextjs to install all required Supabase packages. Create the directory structure src/lib/supabase/ to house the configuration files. Verify package.json includes all three dependencies with correct versions.\n<info added on 2025-11-09T07:37:17.118Z>\n✅ Successfully completed installation and directory setup.\n\n**Installed packages:**\n- @supabase/supabase-js@2.80.0\n- @supabase/ssr@0.7.0  \n- @supabase/auth-helpers-nextjs@0.10.0\n\n**Directory created:**\n- src/lib/supabase/\n\n**Important note:** @supabase/auth-helpers-nextjs is deprecated in favor of @supabase/ssr. We should primarily use @supabase/ssr for our configuration files going forward.\n</info added on 2025-11-09T07:37:17.118Z>",
+            "status": "done",
+            "testStrategy": "Verify all three packages appear in package.json dependencies, confirm src/lib/supabase directory exists, run npm list to check for dependency conflicts",
+            "updatedAt": "2025-11-09T07:37:26.866Z",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Create Supabase project and obtain credentials",
+            "description": "Set up a new Supabase project through the web interface and retrieve the project URL and anonymous key",
+            "dependencies": [
+              1
+            ],
+            "details": "Navigate to https://supabase.com and create a new project. Choose an appropriate project name and region. Wait for project provisioning to complete. Navigate to Project Settings > API to obtain the project URL and anon/public key. Document these credentials securely for the next step.\n<info added on 2025-11-09T07:58:25.336Z>\nProject successfully created with name \"Try Flowidly\" (Project ID: fibdgfebbspbevyrsrxa). Project URL confirmed as https://fibdgfebbspbevyrsrxa.supabase.co. Dashboard is accessible and API credentials have been obtained from Project Settings.\n</info added on 2025-11-09T07:58:25.336Z>",
+            "status": "done",
+            "testStrategy": "Verify Supabase project dashboard is accessible, confirm project URL follows format https://[project-ref].supabase.co, validate anon key is a valid JWT token format",
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T07:58:34.396Z"
+          },
+          {
+            "id": 3,
+            "title": "Configure environment variables in .env.local",
+            "description": "Create .env.local file with Supabase project credentials and ensure proper environment variable configuration",
+            "dependencies": [
+              2
+            ],
+            "details": "Create .env.local file in the project root. Add NEXT_PUBLIC_SUPABASE_URL with the project URL from Supabase dashboard. Add NEXT_PUBLIC_SUPABASE_ANON_KEY with the anon key from Supabase dashboard. Ensure .env.local is listed in .gitignore to prevent committing sensitive credentials. Create .env.example with placeholder values for team reference.",
+            "status": "done",
+            "testStrategy": "Verify .env.local exists and contains both required variables, confirm .env.local is in .gitignore, test environment variables load correctly using process.env in a test file",
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T07:58:34.398Z"
+          },
+          {
+            "id": 4,
+            "title": "Create Supabase client and server configuration files",
+            "description": "Implement client-side and server-side Supabase client configurations optimized for Next.js App Router",
+            "dependencies": [
+              3
+            ],
+            "details": "Create src/lib/supabase/client.ts with createBrowserClient from @supabase/ssr for client-side usage, using NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY. Create src/lib/supabase/server.ts with createServerClient for server components and route handlers, properly handling cookies with Next.js cookies() API. Include TypeScript types and proper error handling for missing environment variables.\n<info added on 2025-11-09T07:59:42.443Z>\nCompletion confirmed. Both client.ts and server.ts files successfully created in src/lib/supabase/ directory. Implementation uses @supabase/ssr package (not deprecated auth-helpers-nextjs) with createBrowserClient for client-side and createServerClient for server-side operations. Environment variable validation implemented with descriptive error messages. Server client properly handles Next.js 15 async cookies() API with error handling for Server Component contexts. Cookie operations include get, set, and remove methods with proper error boundaries. TypeScript types automatically inferred from Supabase clients.\n</info added on 2025-11-09T07:59:42.443Z>",
+            "status": "done",
+            "testStrategy": "Verify both files compile without TypeScript errors, test client.ts in a client component, test server.ts in a server component, confirm proper cookie handling in server configuration",
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T07:59:53.292Z"
+          },
+          {
+            "id": 5,
+            "title": "Test Supabase connection in development environment",
+            "description": "Verify the Supabase configuration works correctly by testing database connectivity and authentication in development",
+            "dependencies": [
+              4
+            ],
+            "details": "Create a test page or API route that imports the Supabase client and attempts a simple query (e.g., supabase.from('_migrations').select('count')). Run the Next.js development server with npm run dev. Check browser console and terminal for any connection errors. Verify no CORS issues, authentication errors, or environment variable loading problems. Document any connection issues and their resolutions.\n<info added on 2025-11-09T08:02:05.796Z>\nConnection test completed successfully with all verification checks passing. Test implementation created in src/app/page.tsx featuring server-side Supabase client initialization, database connectivity verification, and branded UI with gradient background and status card displaying 'connected ✅' indicator. Development server running on localhost:3000 with zero errors in browser console or terminal. All environment variables loading correctly with no CORS, authentication, or configuration issues detected. Error handling and troubleshooting display implemented for future debugging. Supabase configuration validated and production-ready for feature development.\n</info added on 2025-11-09T08:02:05.796Z>",
+            "status": "done",
+            "testStrategy": "Verify Supabase client connects successfully without errors, check browser console shows no connection errors, confirm environment variables load correctly in both client and server contexts, validate no CORS or authentication errors appear",
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T08:02:17.597Z"
+          }
+        ],
+        "updatedAt": "2025-11-09T08:02:17.597Z"
+      },
+      {
+        "id": "2",
+        "title": "Create comprehensive database schema with RLS policies",
+        "description": "Design and implement complete database schema for proposals, templates, users, signatures, payments, and analytics",
+        "details": "Create Supabase migrations for all tables: users (with role enum), proposal_templates, proposal_sections, proposals (with status enum), proposal_section_instances, signatures, payments (with Stripe IDs), proposal_events, and aggregated_metrics materialized view. Implement Row Level Security policies ensuring admins can CRUD their own data, clients can only view proposals via token. Set up storage buckets for media files and PDFs with appropriate policies. Use UUID primary keys and proper foreign key relationships.",
+        "testStrategy": "Run migrations successfully, verify table structure matches schema, test RLS policies by attempting unauthorized access, confirm storage bucket permissions",
+        "priority": "high",
+        "dependencies": [
+          "1"
+        ],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create core database tables migration",
+            "description": "Design and implement migration for users, proposal_templates, proposal_sections, and proposals tables with proper enums, UUID primary keys, and foreign key relationships",
+            "dependencies": [],
+            "details": "Create Supabase migration file for core tables: users table with role enum (admin/client), proposal_templates table with metadata fields, proposal_sections table for reusable content blocks, and proposals table with status enum (draft/sent/viewed/accepted/rejected). Use UUID primary keys, add created_at/updated_at timestamps, establish foreign key relationships between tables, and add appropriate indexes for performance.\n<info added on 2025-11-09T08:11:27.874Z>\nMigration successfully executed via Supabase Dashboard SQL Editor. Core database tables created with enhanced security features including pgcrypto extension for token generation, comprehensive foreign key relationships with CASCADE/SET NULL constraints, performance-optimized indexes on all key columns, and automated updated_at timestamp triggers. Schema includes users table with user_role enum (admin, viewer), proposal_templates, proposal_sections, proposals with proposal_status enum and secure access tokens, and proposal_section_instances for content management.\n</info added on 2025-11-09T08:11:27.874Z>",
+            "status": "done",
+            "testStrategy": "Run migration successfully, verify table structure with SQL queries, check that enums are properly created, validate foreign key constraints work correctly",
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T08:11:37.921Z"
+          },
+          {
+            "id": 2,
+            "title": "Create supporting tables and materialized view",
+            "description": "Implement migration for proposal_section_instances, signatures, payments, proposal_events tables and aggregated_metrics materialized view",
+            "dependencies": [
+              1
+            ],
+            "details": "Create migration for proposal_section_instances (linking proposals to sections), signatures table with signer info and timestamps, payments table with Stripe payment_intent_id and status fields, proposal_events table for activity tracking with event_type enum. Create aggregated_metrics materialized view for analytics dashboard with pre-computed statistics. Include proper foreign keys referencing core tables and indexes for query optimization.\n<info added on 2025-11-09T08:13:22.805Z>\nSuccessfully implemented all supporting tables and materialized view via Supabase Dashboard SQL Editor. Created signatures table with signer details and IP tracking, payments table with full Stripe integration (payment_intent, checkout_session, customer IDs), proposal_events table for comprehensive analytics tracking of user interactions, and aggregated_metrics materialized view with pre-computed statistics. Implemented payment_status enum with all states (pending, processing, succeeded, failed, refunded, cancelled). Added comprehensive indexes for optimal query performance, auto-refresh triggers for materialized view to update automatically when underlying data changes, and session/IP tracking capabilities for analytics. Migration executed successfully with no errors.\n</info added on 2025-11-09T08:13:22.805Z>",
+            "status": "done",
+            "testStrategy": "Verify all tables created successfully, test foreign key constraints, validate materialized view refreshes correctly, ensure Stripe ID fields have appropriate constraints",
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T08:13:33.501Z"
+          },
+          {
+            "id": 3,
+            "title": "Implement Row Level Security policies",
+            "description": "Create comprehensive RLS policies for all tables ensuring admins can CRUD their own data and clients can only view proposals via secure token",
+            "dependencies": [
+              2
+            ],
+            "details": "Enable RLS on all tables. Create policies for admins: SELECT/INSERT/UPDATE/DELETE on their own organization's data using user_id or org_id filtering. Create client policies: SELECT only on proposals table using secure token validation (proposal_token column). Add policies for signatures and payments tables allowing clients to insert/update via token. Ensure proposal_events can be inserted by both admins and clients with appropriate filtering.\n<info added on 2025-11-09T08:15:37.474Z>\nRLS implementation completed successfully via Supabase Dashboard SQL Editor. All tables now have RLS enabled with comprehensive security model: admins have full CRUD access to their own organization's data (templates, sections, proposals), clients can view proposals via access token and perform signing actions, system role can create/update payments for Stripe webhook integration. Policies implemented include role-based access control (admin vs viewer), owner-based permissions filtering by user_id, public read access for client-facing data with token validation, and insert-only permissions for client actions (signatures, proposal_events). Migration executed without errors, confirming all security policies are active and functioning as designed.\n</info added on 2025-11-09T08:15:37.474Z>",
+            "status": "done",
+            "testStrategy": "Test RLS policies by attempting unauthorized access from different user roles, verify admins cannot access other admins' data, confirm clients can only view proposals with valid tokens, test edge cases with expired or invalid tokens",
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T08:15:50.052Z"
+          },
+          {
+            "id": 4,
+            "title": "Set up storage buckets with access policies",
+            "description": "Configure Supabase storage buckets for media files and PDF documents with appropriate security policies",
+            "dependencies": [
+              3
+            ],
+            "details": "Create storage buckets: 'proposal-media' for images/videos used in proposals, 'proposal-pdfs' for generated PDF documents. Configure bucket policies: admins can upload/delete files in their organization's folder structure, clients can read PDFs via secure token validation. Set file size limits (10MB for media, 50MB for PDFs), allowed MIME types, and implement folder-based organization using user_id/proposal_id paths.\n<info added on 2025-11-09T08:17:51.578Z>\nImplementation completed successfully. Three storage buckets created with RLS-controlled access policies: proposal-media (10MB limit for JPEG, PNG, GIF, WebP, SVG, MP4, WebM), proposal-pdfs (50MB limit for PDF only), and signatures (1MB limit for JPEG, PNG, SVG). Security policies configured: proposal-media allows admin upload/update/delete with public viewing, proposal-pdfs allows admin upload/delete with public viewing, signatures allows public upload with admin-only viewing and immutable records for legal compliance. All buckets are private by default with RLS enforcement. Migration executed without errors via Supabase Dashboard SQL Editor.\n</info added on 2025-11-09T08:17:51.578Z>",
+            "status": "done",
+            "testStrategy": "Test file upload/download with different user roles, verify storage policies prevent unauthorized access, confirm file size and type restrictions work, test bucket permissions with valid and invalid tokens",
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T08:18:43.505Z"
+          },
+          {
+            "id": 5,
+            "title": "Create database indexes and optimization",
+            "description": "Add performance indexes on frequently queried columns and optimize database schema for production workload",
+            "dependencies": [
+              4
+            ],
+            "details": "Create indexes on: proposals(user_id, status, created_at), proposal_events(proposal_id, event_type, created_at), signatures(proposal_id), payments(proposal_id, status), proposal_templates(user_id). Add composite indexes for common query patterns. Set up materialized view refresh schedule for aggregated_metrics. Add database functions for common operations like proposal token validation and event logging.\n<info added on 2025-11-09T08:23:53.705Z>\nDatabase optimization implementation completed with helper functions for token validation (validate_proposal_token with expiration checking), event logging (log_proposal_event), analytics retrieval (get_proposal_analytics returning JSON), and manual metrics refresh (refresh_proposal_metrics). Automated triggers now handle proposal status transitions: auto-updates to 'viewed' on first view event, 'signed' when signature created, 'paid' when payment succeeds, with corresponding timestamp fields (viewed_at, signed_at, paid_at) auto-populated. Performance enhanced through composite indexes for dashboard queries (user + status + date combinations), client email lookups, event analytics, and Stripe ID lookups. Database statistics gathered to optimize query planner. Migration executed successfully with zero errors.\n</info added on 2025-11-09T08:23:53.705Z>",
+            "status": "done",
+            "testStrategy": "Run EXPLAIN ANALYZE on common queries to verify index usage, benchmark query performance before and after indexes, test materialized view refresh performance, validate database functions work correctly",
+            "parentId": "undefined",
+            "updatedAt": "2025-11-09T08:24:05.346Z"
+          }
+        ],
+        "updatedAt": "2025-11-09T08:24:05.346Z"
+      },
+      {
+        "id": "3",
+        "title": "Implement Avyra brand design system in Tailwind CSS",
+        "description": "Configure Tailwind CSS with Avyra brand colors, typography, and component utilities from minibrandguide.txt",
+        "details": "Create tailwind.config.ts with complete Avyra color palette: #08090A (bg-main), #101011 (bg-card), #F7F8F8 (text-primary), #f2c6a6 (accent-primary), etc. Configure Inter and Instrument Serif fonts. Set up spacing scale (4px to 96px). Update globals.css with brand-specific classes: .input-linear, .btn-primary, .btn-secondary, .card-linear, .shadow-linear variants. Implement custom scrollbar styling, gradient definitions for hero backgrounds and buttons, and hover state animations. Build base UI components: Button (primary copper gradient, secondary), Card, Input, Badge, following exact specifications from brand guide.",
+        "testStrategy": "Visual regression tests comparing components against minibrandguide.txt specifications, verify color values match exactly, test responsive breakpoints at 375px/768px/1280px, validate typography hierarchy and spacing scale usage",
+        "priority": "high",
+        "dependencies": [
+          "1"
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Configure Tailwind CSS with Avyra brand color palette and typography",
+            "description": "Set up tailwind.config.ts with complete Avyra color system and font configuration",
+            "dependencies": [],
+            "details": "Create tailwind.config.ts extending default theme with Avyra colors: bg-main (#08090A), bg-card (#101011), text-primary (#F7F8F8), accent-primary (#f2c6a6), and all other brand colors. Configure custom font families for Inter (sans) and Instrument Serif (serif) with appropriate font weights. Set up custom spacing scale from 4px to 96px following brand specifications. Configure responsive breakpoints at 375px, 768px, and 1280px.",
+            "status": "pending",
+            "testStrategy": "Verify all color values match minibrandguide.txt exactly using visual inspection and automated color extraction tests. Test font loading across different browsers. Validate spacing scale values are correctly applied.",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Create brand-specific CSS utility classes in globals.css",
+            "description": "Implement custom CSS classes for inputs, buttons, cards, and shadows with Avyra brand styling",
+            "dependencies": [
+              1
+            ],
+            "details": "Update globals.css with brand-specific utility classes: .input-linear for form inputs with dark styling and copper accents, .btn-primary with copper gradient (#f2c6a6 to darker shade), .btn-secondary with outline styling, .card-linear for card containers with #101011 background, .shadow-linear variants for elevation effects. Include hover state animations with smooth transitions and scale effects matching brand specifications.",
+            "status": "pending",
+            "testStrategy": "Visual regression testing comparing rendered components against minibrandguide.txt specifications. Test hover states and animations for smooth transitions. Verify class names are correctly applied and styles cascade properly.",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Implement gradient definitions and custom scrollbar styling",
+            "description": "Create CSS gradient utilities for hero backgrounds and buttons, plus custom scrollbar theming",
+            "dependencies": [
+              1
+            ],
+            "details": "Define CSS custom properties and utility classes for brand gradients used in hero sections and button backgrounds. Implement copper gradient variations for primary CTAs. Create custom scrollbar styling using webkit-scrollbar pseudo-elements with dark theme (#08090A track, #f2c6a6 thumb) to match Avyra brand. Add smooth scrolling behavior and hover effects on scrollbar thumb.",
+            "status": "pending",
+            "testStrategy": "Test gradient rendering across different browsers (Chrome, Firefox, Safari). Verify scrollbar styling works on webkit and non-webkit browsers. Test gradient color stops match brand specifications.",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Build reusable Button component with brand variants",
+            "description": "Create Button component with primary copper gradient and secondary variants following Avyra design system",
+            "dependencies": [
+              2
+            ],
+            "details": "Build src/components/ui/Button.tsx component with TypeScript props for variant (primary/secondary), size (sm/md/lg), and disabled states. Primary variant uses copper gradient background with white text, hover scale animation, and shadow effects. Secondary variant has transparent background with copper border and text. Include loading state with spinner animation. Implement proper accessibility with ARIA labels and keyboard navigation support.",
+            "status": "pending",
+            "testStrategy": "Test all button variants render correctly with proper styling. Verify hover and active states work as expected. Test accessibility with keyboard navigation and screen readers. Validate responsive sizing at all breakpoints (375px/768px/1280px).",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Build Card, Input, and Badge base UI components",
+            "description": "Create remaining foundational UI components (Card, Input, Badge) following Avyra brand specifications",
+            "dependencies": [
+              2
+            ],
+            "details": "Build src/components/ui/Card.tsx with #101011 background, subtle border, and .card-linear styling. Create src/components/ui/Input.tsx with .input-linear class, dark background, copper focus ring, and proper label/error state handling. Implement src/components/ui/Badge.tsx with size variants and color options (default, success, warning, error) using brand color palette. All components should be fully typed with TypeScript and support className prop for extensibility.",
+            "status": "pending",
+            "testStrategy": "Visual regression tests for each component against brand guide. Test Input component focus states and error validation styling. Verify Card shadows and borders render correctly. Test Badge color variants match brand palette. Validate all components are responsive at 375px/768px/1280px breakpoints.",
+            "parentId": "undefined"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "title": "Define TypeScript types and interfaces",
+        "description": "Create comprehensive TypeScript definitions for all database entities and API responses",
+        "details": "Generate types from Supabase schema using supabase gen types. Create src/types/ directory with proposal.ts, analytics.ts, database.ts. Define interfaces for Proposal, Template, Section, User, Signature, Payment, Event with proper typing for enums (ProposalStatus, EventType, PaymentStatus). Include API response types, form validation schemas using Zod, and utility types for frontend components. Export all types from index.ts barrel file.",
+        "testStrategy": "TypeScript compilation succeeds, no type errors, types accurately reflect database schema, all enums properly typed",
+        "priority": "medium",
+        "dependencies": [
+          "2"
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Generate base types from Supabase schema",
+            "description": "Use Supabase CLI to automatically generate TypeScript types from the database schema",
+            "dependencies": [],
+            "details": "Run 'supabase gen types typescript' command to generate base database types from the Supabase schema. This will create type definitions that match the database tables, columns, and relationships established in task 12. Save the generated types as a foundation for custom type definitions.",
+            "status": "pending",
+            "testStrategy": "Verify generated types file exists, contains all table definitions, and TypeScript compilation succeeds without errors",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Create type directory structure and database entity interfaces",
+            "description": "Set up src/types/ directory and create database.ts with core entity interfaces and enums",
+            "dependencies": [
+              1
+            ],
+            "details": "Create src/types/ directory structure. In database.ts, define interfaces for User (with role enum), Proposal (with ProposalStatus enum: draft, sent, viewed, signed, paid, expired), Template, Section, Signature, Payment (with PaymentStatus enum: pending, completed, failed, refunded), and Event (with EventType enum: created, sent, viewed, signed, paid, etc.). Include proper typing for all fields, timestamps, foreign keys, and nullable fields.",
+            "status": "pending",
+            "testStrategy": "TypeScript compilation succeeds, all enums are properly typed, interfaces match database schema from task 12",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Create proposal-specific types and interfaces",
+            "description": "Define comprehensive proposal-related types in proposal.ts including nested structures and relationships",
+            "dependencies": [
+              2
+            ],
+            "details": "Create src/types/proposal.ts with detailed Proposal interface including nested Section instances, Template references, User relationships, and Signature data. Define ProposalWithSections, ProposalListItem, ProposalDetail types for different use cases. Include types for proposal creation, updates, and client-facing views. Add utility types like ProposalFormData and ProposalUpdatePayload.",
+            "status": "pending",
+            "testStrategy": "All proposal-related components can use these types without errors, nested relationships are properly typed",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Create analytics types and API response interfaces",
+            "description": "Define analytics.ts with metrics types and create API response wrapper types for all endpoints",
+            "dependencies": [
+              2
+            ],
+            "details": "Create src/types/analytics.ts with interfaces for Event tracking, aggregated metrics, dashboard statistics, and reporting data. Define API response types including ApiResponse<T>, PaginatedResponse<T>, ErrorResponse, and SuccessResponse wrappers. Create form validation schemas using Zod for proposal creation, template management, user registration, and payment processing. Include proper error typing and validation result types.",
+            "status": "pending",
+            "testStrategy": "API calls properly typed with response wrappers, Zod schemas validate correctly, analytics queries return properly typed data",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Create utility types and barrel export file",
+            "description": "Define frontend utility types and create index.ts barrel file to export all type definitions",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Create utility types for frontend components including SelectOption, FormField, TableColumn, FilterOptions, SortOptions, and component prop types. Add conditional types, mapped types, and type guards as needed. Create src/types/index.ts barrel file that exports all types from database.ts, proposal.ts, analytics.ts, and utility types. Organize exports logically with named exports for easy importing throughout the application.",
+            "status": "pending",
+            "testStrategy": "All types can be imported from single index.ts file, no circular dependencies, TypeScript compilation succeeds across entire project with no type errors",
+            "parentId": "undefined"
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "title": "Build authentication system with Supabase Auth",
+        "description": "Implement secure admin authentication with session management and route protection",
+        "details": "Create src/lib/supabase/auth.ts with signUp, signIn, signOut functions. Build middleware.ts to protect /dashboard and /proposals routes. Implement src/app/(auth)/login and signup pages with Avyra brand styling: dark background (#08090A), card container (#101011), .input-linear styling for forms, primary copper gradient submit button. Add proper error handling with #ef4444 error states, loading spinners with copper color. Include password strength validation, email confirmation flow, and persistent sessions using HTTP-only cookies.",
+        "testStrategy": "E2E tests for signup/login flows, verify protected routes redirect unauthenticated users, test session persistence across browser refreshes, validate form error states and styling",
+        "priority": "high",
+        "dependencies": [
+          "1",
+          "3"
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Supabase auth utility functions in src/lib/supabase/auth.ts",
+            "description": "Implement core authentication functions including signUp, signIn, signOut, and session management utilities using Supabase Auth SDK",
+            "dependencies": [],
+            "details": "Create src/lib/supabase/auth.ts file with async functions: signUp(email, password) for user registration, signIn(email, password) for login, signOut() for logout, and getSession() for retrieving current session. Use @supabase/supabase-js client methods. Include proper TypeScript types for auth responses. Handle Supabase auth errors and return standardized error objects. Implement getUser() helper to fetch authenticated user data.",
+            "status": "pending",
+            "testStrategy": "Unit tests for each auth function, mock Supabase client responses, verify error handling for invalid credentials, test successful auth flows return proper user data",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Build middleware.ts for route protection",
+            "description": "Create Next.js middleware to protect /dashboard and /proposals routes, redirecting unauthenticated users to login page",
+            "dependencies": [
+              1
+            ],
+            "details": "Create middleware.ts in project root. Use @supabase/ssr to create Supabase client for middleware context. Check session validity using supabase.auth.getSession(). Define protected routes array ['/dashboard', '/proposals']. If user is unauthenticated and accessing protected route, redirect to /login with redirect query parameter. If authenticated user tries to access /login or /signup, redirect to /dashboard. Set up proper cookie handling for session persistence using HTTP-only cookies.",
+            "status": "pending",
+            "testStrategy": "E2E tests verifying unauthenticated users are redirected to login, authenticated users can access protected routes, redirect parameter works correctly, session cookies are set properly",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Implement login page with Avyra brand styling",
+            "description": "Create src/app/(auth)/login/page.tsx with branded login form, error handling, and loading states following Avyra design system",
+            "dependencies": [
+              1
+            ],
+            "details": "Create login page component with dark background (#08090A), centered card container (#101011). Build form with email and password fields using .input-linear styling. Add copper gradient submit button using primary gradient. Implement form validation with react-hook-form or native validation. Display error messages in #ef4444 color below fields. Add loading spinner with copper color during authentication. Call signIn function from auth.ts. Handle successful login by redirecting to dashboard or redirect parameter. Include 'Forgot Password?' and 'Sign Up' links.",
+            "status": "pending",
+            "testStrategy": "E2E tests for successful login flow, verify error states display correctly with proper styling, test loading spinner appears during submission, validate form prevents submission with empty fields",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Implement signup page with password validation and email confirmation",
+            "description": "Create src/app/(auth)/signup/page.tsx with registration form, password strength validation, and email confirmation flow using Avyra styling",
+            "dependencies": [
+              1
+            ],
+            "details": "Create signup page matching login styling: dark background (#08090A), card container (#101011). Build form with email, password, and confirm password fields using .input-linear styling. Implement password strength validation (minimum 8 characters, uppercase, lowercase, number, special character). Display strength indicator with visual feedback. Add copper gradient submit button. Call signUp function from auth.ts. Configure Supabase to send confirmation email. Show success message instructing user to check email. Handle errors (#ef4444) like existing email. Add loading spinner with copper color. Include 'Already have an account?' login link.",
+            "status": "pending",
+            "testStrategy": "E2E tests for signup flow, verify password strength validation works correctly, test email confirmation message appears, validate error handling for duplicate emails, check form styling matches design system",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Implement session persistence and authentication state management",
+            "description": "Set up persistent sessions using HTTP-only cookies and create authentication context for managing user state across the application",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Configure Supabase client to use HTTP-only cookies for session storage. Create src/contexts/AuthContext.tsx with React Context for global auth state. Implement useAuth hook to access current user, loading state, and auth functions. Add session refresh logic to handle token expiration. Set up auth state listener using supabase.auth.onAuthStateChange() to update context when user logs in/out. Ensure sessions persist across browser refreshes by checking for existing session on app load. Handle session expiration gracefully by redirecting to login.",
+            "status": "pending",
+            "testStrategy": "E2E tests verifying sessions persist across browser refreshes, test automatic session refresh before expiration, validate auth state updates correctly on login/logout, check expired sessions redirect to login",
+            "parentId": "undefined"
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "title": "Create proposal template management system",
+        "description": "Build CRUD interface for managing reusable proposal templates with modular sections",
+        "details": "Create src/app/api/templates route handlers for CRUD operations. Build src/app/(admin)/templates page with template listing (card grid layout), create/edit forms using Avyra components. Implement section library management with drag-and-drop ordering, rich text editor for content (use @tiptap/react with dark theme). Add template duplication feature, version history tracking, and section toggle management. Use React Hook Form with Zod validation for form handling.",
+        "testStrategy": "API integration tests for all CRUD operations, E2E tests for template creation/editing workflow, verify section ordering and toggles work correctly, test template duplication",
+        "priority": "medium",
+        "dependencies": [
+          "2",
+          "3",
+          "5"
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create API route handlers for template CRUD operations",
+            "description": "Implement REST API endpoints in src/app/api/templates for creating, reading, updating, and deleting proposal templates with proper error handling and validation",
+            "dependencies": [],
+            "details": "Create route handlers in src/app/api/templates/route.ts for GET (list all templates), POST (create new template). Create src/app/api/templates/[id]/route.ts for GET (single template), PATCH (update), DELETE operations. Integrate with Supabase client for database operations. Implement proper error handling, status codes, and JSON responses. Add authentication checks to ensure only authorized users can perform operations.",
+            "status": "pending",
+            "testStrategy": "API integration tests for all CRUD operations including success cases, error cases, validation failures, and unauthorized access attempts",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Build template listing page with card grid layout",
+            "description": "Create the main templates page at src/app/(admin)/templates with a responsive card grid displaying all available templates with search and filter capabilities",
+            "dependencies": [
+              1
+            ],
+            "details": "Create src/app/(admin)/templates/page.tsx with card grid layout using Avyra components. Display template cards showing title, description, preview, last modified date, and action buttons (edit, duplicate, delete). Implement search functionality to filter templates by name. Add sorting options (by date, name). Include a 'Create New Template' button. Use React Query or SWR for data fetching and caching. Ensure responsive design for mobile and desktop.",
+            "status": "pending",
+            "testStrategy": "E2E tests for template listing page load, search functionality, sorting, and navigation to create/edit pages",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Implement template create/edit forms with validation",
+            "description": "Build comprehensive forms for creating and editing templates using React Hook Form with Zod validation schema and Avyra UI components",
+            "dependencies": [
+              1
+            ],
+            "details": "Create src/app/(admin)/templates/new and src/app/(admin)/templates/[id]/edit pages. Use React Hook Form for form state management. Define Zod schemas for template validation (title, description, sections). Implement form fields using Avyra components (inputs, textareas, buttons). Add client-side and server-side validation. Display validation errors inline. Handle form submission with loading states and success/error notifications. Include cancel and save actions.",
+            "status": "pending",
+            "testStrategy": "E2E tests for template creation workflow, form validation (required fields, character limits), successful save, and error handling",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Build section library with drag-and-drop and rich text editor",
+            "description": "Implement modular section management system with drag-and-drop reordering, rich text editing using TipTap, and section toggle functionality",
+            "dependencies": [
+              3
+            ],
+            "details": "Integrate @tiptap/react with dark theme for rich text editing of section content. Implement drag-and-drop functionality using @dnd-kit/core or react-beautiful-dnd for section reordering. Create section components with toggle switches to enable/disable sections. Build section library UI showing available sections with add/remove capabilities. Store section order and enabled state in template data. Ensure rich text editor supports formatting (bold, italic, lists, headings) and maintains content integrity.",
+            "status": "pending",
+            "testStrategy": "E2E tests verifying section ordering works correctly, rich text content is saved and displayed properly, section toggles persist state, and drag-and-drop functionality across different positions",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Add template duplication and version history tracking",
+            "description": "Implement template duplication feature allowing users to clone existing templates and add version history tracking to monitor template changes over time",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Add duplicate functionality to template cards and detail pages that creates a copy of the template with '(Copy)' suffix. Implement version history tracking by storing snapshots of template changes with timestamps and user information. Create a version history UI component showing list of versions with diff preview. Add ability to restore previous versions. Store version data in database with proper relationships. Include API endpoints for duplication (POST /api/templates/[id]/duplicate) and version retrieval.",
+            "status": "pending",
+            "testStrategy": "E2E tests for template duplication ensuring all sections and content are copied correctly, version history tracking after edits, and version restoration functionality",
+            "parentId": "undefined"
+          }
+        ]
+      },
+      {
+        "id": "7",
+        "title": "Implement proposal creation and link generation",
+        "description": "Build proposal authoring interface with manual data entry and secure link generation",
+        "details": "Create src/app/api/proposals route handlers with CRUD operations. Build src/app/(admin)/proposals/new page with comprehensive form: client details, project scope, pricing tables, timeline selection. Implement template population logic merging proposal data with selected template. Add section toggle controls with real-time preview. Create secure token generation using crypto.randomBytes(32), store in database with expiration timestamps. Generate shareable URLs with format /p/[token]. Include proposal status management (draft, sent, viewed, signed, paid).",
+        "testStrategy": "Test proposal creation flow end-to-end, verify token generation is cryptographically secure and unique, test proposal-template merging logic, validate all form fields and pricing calculations",
+        "priority": "high",
+        "dependencies": [
+          "6",
+          "4"
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create API route handlers for proposal CRUD operations",
+            "description": "Build src/app/api/proposals route handlers with full CRUD functionality for managing proposals",
+            "dependencies": [],
+            "details": "Create src/app/api/proposals/route.ts with POST (create), GET (list), and individual proposal routes at src/app/api/proposals/[id]/route.ts with GET (read), PATCH (update), DELETE operations. Implement database queries using Supabase client to interact with proposals table. Include validation for all input fields, error handling, and proper HTTP status codes. Ensure authentication middleware is applied to protect routes.",
+            "status": "pending",
+            "testStrategy": "Test all CRUD endpoints with various payloads, verify authentication requirements, test error handling for invalid data, validate database transactions and rollback scenarios",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Build proposal creation form with comprehensive input fields",
+            "description": "Create src/app/(admin)/proposals/new page with complete form for client details, project scope, pricing, and timeline",
+            "dependencies": [
+              1
+            ],
+            "details": "Build comprehensive form component at src/app/(admin)/proposals/new/page.tsx including sections for: client details (name, email, company), project scope (description, deliverables), dynamic pricing tables with line items (description, quantity, rate, total), timeline selection with date pickers. Use Avyra design system components (.input-linear, .btn-primary). Implement form state management with React Hook Form or similar. Add validation rules for required fields and pricing calculations. Include auto-save draft functionality.",
+            "status": "pending",
+            "testStrategy": "Test form validation for all required fields, verify pricing calculations are accurate, test auto-save functionality, validate date picker behavior, test form submission with complete and partial data",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Implement template population and merging logic",
+            "description": "Build logic to merge proposal data with selected templates and add section toggle controls with real-time preview",
+            "dependencies": [
+              2
+            ],
+            "details": "Create template merging utility that takes proposal form data and selected template ID, then populates template placeholders with actual values. Implement section toggle controls allowing users to enable/disable template sections (e.g., about us, case studies, terms). Build real-time preview component that renders the merged proposal content as users edit. Use React state to manage section visibility and update preview dynamically. Ensure proper handling of optional fields and conditional content rendering.",
+            "status": "pending",
+            "testStrategy": "Test template merging with various data combinations, verify all placeholders are correctly replaced, test section toggle functionality, validate real-time preview updates, test with missing optional fields",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Create secure token generation and database storage system",
+            "description": "Implement cryptographically secure token generation using crypto.randomBytes(32) with database storage and expiration management",
+            "dependencies": [
+              1
+            ],
+            "details": "Create token generation utility using Node.js crypto.randomBytes(32).toString('hex') for generating unique, secure tokens. Build database schema for storing tokens with fields: token (unique index), proposal_id (foreign key), created_at, expires_at, viewed_at (nullable). Implement token creation logic that generates token, stores in database with expiration timestamp (e.g., 30 days from creation), and associates with proposal. Add token validation middleware to check expiration and existence. Include token regeneration functionality for expired links.",
+            "status": "pending",
+            "testStrategy": "Verify token uniqueness across multiple generations, test cryptographic randomness, validate expiration logic, test token lookup performance with database indexes, verify security against brute force attacks",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Generate shareable URLs and implement proposal status management",
+            "description": "Create shareable URL generation with format /p/[token] and implement comprehensive proposal status workflow",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Build URL generation function that creates shareable links in format /p/[token] using the secure tokens. Create public-facing route at src/app/p/[token]/page.tsx that validates token, checks expiration, and renders proposal content. Implement proposal status state machine with transitions: draft → sent → viewed → signed → paid. Add status update API endpoints and UI controls. Track status changes with timestamps in database. Include email notification triggers for status changes. Build proposal list view showing all proposals with current status, client name, and action buttons.",
+            "status": "pending",
+            "testStrategy": "Test URL generation and validation, verify public route renders correctly for valid tokens, test all status transitions and validations, verify status change notifications, test proposal list filtering and sorting by status",
+            "parentId": "undefined"
+          }
+        ]
+      },
+      {
+        "id": "8",
+        "title": "Build responsive proposal rendering for clients",
+        "description": "Create beautiful, mobile-first proposal pages with Avyra branding for client viewing experience",
+        "details": "Create src/app/p/[token] route with server-side rendering for SEO. Build ProposalRenderer component with responsive layout using Avyra brand styling: dark gradient background, section cards with #101011 background and #1B1C1D borders, hero heading with radial gradient text effect. Implement PricingTable component with proper currency formatting, line item display, and visual hierarchy. Add lazy loading for media content, smooth scroll animations using Framer Motion, and section toggle respect. Include mobile-first responsive design with breakpoints at 640px/1024px.",
+        "testStrategy": "Visual regression tests at all breakpoints, verify server-side rendering works, test proposal token validation, validate section toggles affect rendering, performance tests for lazy loading",
+        "priority": "high",
+        "dependencies": [
+          "7",
+          "3"
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create dynamic route and server-side rendering setup",
+            "description": "Set up the src/app/p/[token] route with Next.js App Router and implement server-side rendering for SEO optimization",
+            "dependencies": [],
+            "details": "Create the src/app/p/[token]/page.tsx file with async server component. Implement token validation by fetching proposal data from Supabase using the token parameter. Add proper error handling for invalid/expired tokens with 404 page. Configure metadata generation for SEO including dynamic title, description, and Open Graph tags based on proposal content. Ensure server-side data fetching for optimal performance and SEO.",
+            "status": "pending",
+            "testStrategy": "Verify SSR works by checking page source contains proposal content, test with invalid tokens return 404, validate metadata is properly generated, test SEO with Lighthouse",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Build ProposalRenderer component with Avyra brand styling",
+            "description": "Create the main ProposalRenderer component with responsive layout and Avyra dark theme branding including gradient backgrounds and section cards",
+            "dependencies": [
+              1
+            ],
+            "details": "Create src/components/ProposalRenderer.tsx with mobile-first responsive design. Implement dark gradient background using Avyra brand colors. Build section card components with #101011 background and #1B1C1D borders. Create hero section with radial gradient text effect for proposal title. Add responsive breakpoints at 640px (mobile) and 1024px (desktop). Implement section toggle logic to conditionally render sections based on proposal configuration. Use Tailwind CSS for styling consistency.",
+            "status": "pending",
+            "testStrategy": "Visual regression tests at 640px, 768px, 1024px, and 1440px breakpoints, verify gradient effects render correctly, test section toggles hide/show content properly, cross-browser testing",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Implement PricingTable component with currency formatting",
+            "description": "Build a dedicated PricingTable component with proper currency formatting, line item display, subtotals, taxes, and visual hierarchy",
+            "dependencies": [
+              2
+            ],
+            "details": "Create src/components/PricingTable.tsx component. Implement line item rows with description, quantity, unit price, and total columns. Add currency formatting using Intl.NumberFormat for proper locale support. Include subtotal, tax, discount, and grand total calculations with visual emphasis on final amount. Use table or grid layout with proper alignment for numbers (right-aligned). Add responsive design that stacks on mobile devices. Include optional notes/terms section below pricing table.",
+            "status": "pending",
+            "testStrategy": "Test currency formatting with different locales and amounts, verify calculations are accurate, test responsive layout on mobile devices, validate visual hierarchy is clear",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Add lazy loading for media and Framer Motion animations",
+            "description": "Implement lazy loading for images and media content, and add smooth scroll animations using Framer Motion for enhanced user experience",
+            "dependencies": [
+              2
+            ],
+            "details": "Install and configure Framer Motion library. Implement lazy loading for images using Next.js Image component with loading='lazy' and blur placeholders. Add intersection observer for media content to load only when visible. Create smooth scroll animations for section reveals using Framer Motion's motion components with fadeIn and slideUp variants. Add stagger animations for list items and cards. Implement scroll progress indicator. Ensure animations respect prefers-reduced-motion for accessibility.",
+            "status": "pending",
+            "testStrategy": "Performance tests to verify lazy loading reduces initial page load, test animations work smoothly across devices, verify prefers-reduced-motion is respected, measure Core Web Vitals improvements",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Integrate all components and perform end-to-end testing",
+            "description": "Integrate ProposalRenderer, PricingTable, and animations into the proposal route, and conduct comprehensive testing across all breakpoints and scenarios",
+            "dependencies": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "details": "Integrate ProposalRenderer and PricingTable components into the src/app/p/[token]/page.tsx route. Ensure proper data flow from server-side fetch to client components. Add loading states and error boundaries. Test complete proposal rendering with all section types (text, images, pricing, timeline). Verify token validation and expiration handling. Conduct visual regression testing at all breakpoints. Test performance with Lighthouse and ensure scores meet targets. Validate accessibility with screen readers.",
+            "status": "pending",
+            "testStrategy": "End-to-end tests covering full proposal viewing flow, visual regression tests at 640px/1024px breakpoints, performance testing with Lighthouse (target 90+ score), accessibility audit with axe-core, test with real proposal data",
+            "parentId": "undefined"
+          }
+        ]
+      },
+      {
+        "id": "9",
+        "title": "Implement e-signature capture system",
+        "description": "Build legally compliant signature collection with audit trail and PDF generation",
+        "details": "Create SignatureCanvas component using HTML5 canvas or react-signature-canvas for drawing, plus typed signature input with .input-linear styling. Implement src/app/api/signatures route for storing signature data, timestamp, IP address, and user agent. Add signature verification and immutable audit trail storage. Generate PDF snapshots using @react-pdf/renderer or puppeteer with proposal content and embedded signature. Store PDFs in Supabase Storage and update proposal status to 'signed' atomically.",
+        "testStrategy": "Test signature capture on mobile and desktop, verify audit trail data integrity, test PDF generation with embedded signatures, validate signature storage and retrieval",
+        "priority": "medium",
+        "dependencies": [
+          "8"
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create SignatureCanvas component with drawing and typed signature input",
+            "description": "Build a reusable signature capture component supporting both drawn and typed signatures with Avyra brand styling",
+            "dependencies": [],
+            "details": "Implement SignatureCanvas component using react-signature-canvas or HTML5 canvas API for freehand drawing. Add typed signature input field with .input-linear styling from the Avyra design system. Include clear/reset functionality, signature preview, and responsive canvas sizing for mobile and desktop. Add validation to ensure signature is provided before submission. Style component with brand colors and ensure smooth drawing experience across touch and mouse inputs.",
+            "status": "pending",
+            "testStrategy": "Test signature drawing on mobile touch devices and desktop with mouse, verify typed signature renders correctly with brand fonts, test clear/reset functionality, validate responsive canvas sizing across breakpoints (375px/768px/1280px)",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Implement /api/signatures route for signature data storage",
+            "description": "Create API endpoint to securely store signature data with comprehensive audit trail information",
+            "dependencies": [
+              1
+            ],
+            "details": "Build src/app/api/signatures route handlers (POST, GET) to store signature image data (base64 or blob), timestamp (ISO 8601), IP address, user agent, and proposal ID. Implement request validation and sanitization. Store signature metadata in Supabase database with immutable audit trail fields. Capture additional context like geolocation consent if available. Ensure atomic operations and proper error handling. Link signature records to proposal IDs for retrieval.",
+            "status": "pending",
+            "testStrategy": "Test POST endpoint with valid and invalid signature data, verify all audit trail fields are captured correctly (timestamp, IP, user agent), test concurrent signature submissions, validate data integrity and immutability of stored records",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Add signature verification and immutable audit trail storage",
+            "description": "Implement signature verification logic and ensure audit trail data cannot be modified after creation",
+            "dependencies": [
+              2
+            ],
+            "details": "Create signature verification service to validate signature authenticity using cryptographic hashing (SHA-256) of signature data combined with timestamp and metadata. Store hash in separate verification table for tamper detection. Implement database constraints and triggers to prevent modification of audit trail records after insertion. Add signature status tracking (pending, verified, invalidated). Create audit log queries for compliance reporting. Ensure all signature events are logged immutably.",
+            "status": "pending",
+            "testStrategy": "Test signature hash generation and verification, attempt to modify audit trail records and verify prevention, test signature status transitions, validate cryptographic integrity of stored signatures, verify audit log completeness",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Generate PDF snapshots with embedded signatures using @react-pdf/renderer",
+            "description": "Build PDF generation service that creates legally compliant documents with proposal content and embedded signatures",
+            "dependencies": [
+              3
+            ],
+            "details": "Implement PDF generation using @react-pdf/renderer (or puppeteer as fallback) to create proposal PDFs. Build PDF template components matching proposal structure with Avyra branding. Embed signature image, timestamp, and audit trail summary in PDF footer. Include proposal content, pricing tables, timeline, and client details. Add PDF metadata (creation date, version, signature hash). Ensure PDF is immutable and includes all legally required information for e-signature compliance. Generate unique filename with proposal ID and timestamp.",
+            "status": "pending",
+            "testStrategy": "Test PDF generation with various proposal content lengths, verify signature image embeds correctly at proper resolution, validate PDF metadata and audit trail information, test PDF rendering on different viewers, ensure brand styling matches design system",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Store PDFs in Supabase Storage and update proposal status atomically",
+            "description": "Implement secure PDF storage and atomic proposal status updates to maintain data consistency",
+            "dependencies": [
+              4
+            ],
+            "details": "Create Supabase Storage bucket for signed proposal PDFs with appropriate access policies (private, authenticated access only). Upload generated PDFs to storage with organized folder structure (e.g., /proposals/{proposalId}/signed_{timestamp}.pdf). Implement atomic transaction to update proposal status to 'signed', store PDF storage path, and link signature record ID. Add rollback logic if any step fails. Create API endpoint to retrieve signed PDFs with authentication. Implement PDF download functionality with proper content-type headers and security checks.",
+            "status": "pending",
+            "testStrategy": "Test PDF upload to Supabase Storage with various file sizes, verify atomic transaction rollback on failure, test proposal status update consistency, validate PDF retrieval with authentication, test concurrent signature submissions and status updates, verify storage access policies prevent unauthorized access",
+            "parentId": "undefined"
+          }
+        ]
+      },
+      {
+        "id": "10",
+        "title": "Integrate Stripe payment processing",
+        "description": "Implement secure payment collection with Stripe Checkout and webhook handling",
+        "details": "Install stripe package, create Stripe account in test mode. Build src/lib/stripe/client.ts for creating checkout sessions with line items from proposal pricing. Create src/app/api/stripe/webhook route for handling payment events with signature verification. Implement PaymentButton component with primary copper gradient styling, loading states, and success/error handling. Add payment status tracking, automatic proposal status updates to 'paid', and revenue reporting integration. Configure webhook endpoints in Stripe dashboard.",
+        "testStrategy": "Integration tests with Stripe test mode, webhook simulation tests, verify payment status updates correctly, test checkout session creation with proper line items, validate webhook signature verification",
+        "priority": "high",
+        "dependencies": [
+          "8"
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install Stripe package and configure test mode account",
+            "description": "Set up Stripe SDK and create test mode account with API keys for development environment",
+            "dependencies": [],
+            "details": "Install stripe npm package. Create Stripe account and configure test mode. Generate test API keys (publishable and secret). Store keys in environment variables (STRIPE_SECRET_KEY, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET). Document test card numbers for testing.",
+            "status": "pending",
+            "testStrategy": "Verify Stripe package installation, confirm test mode API keys are properly configured and accessible in environment variables",
+            "parentId": "undefined"
+          },
+          {
+            "id": 2,
+            "title": "Build Stripe client library for checkout session creation",
+            "description": "Create src/lib/stripe/client.ts with functions to initialize Stripe and create checkout sessions from proposal data",
+            "dependencies": [
+              1
+            ],
+            "details": "Create src/lib/stripe/client.ts with Stripe initialization using secret key. Implement createCheckoutSession function that accepts proposal data (line items, pricing, metadata). Map proposal pricing to Stripe line items format with price_data, quantity, and description. Include success_url and cancel_url parameters. Add metadata for proposal ID and client information for tracking.",
+            "status": "pending",
+            "testStrategy": "Unit tests for checkout session creation with various proposal pricing structures, verify line items are correctly formatted, test metadata inclusion",
+            "parentId": "undefined"
+          },
+          {
+            "id": 3,
+            "title": "Implement Stripe webhook endpoint with signature verification",
+            "description": "Create src/app/api/stripe/webhook route to handle payment events securely with signature verification",
+            "dependencies": [
+              1
+            ],
+            "details": "Create src/app/api/stripe/webhook/route.ts POST handler. Implement webhook signature verification using stripe.webhooks.constructEvent with STRIPE_WEBHOOK_SECRET. Handle checkout.session.completed event to extract payment details and proposal metadata. Add error handling for invalid signatures and malformed events. Use raw body parser for signature verification. Log all webhook events for audit trail.",
+            "status": "pending",
+            "testStrategy": "Integration tests with Stripe CLI webhook forwarding, test signature verification with valid and invalid signatures, simulate various webhook events, verify error handling",
+            "parentId": "undefined"
+          },
+          {
+            "id": 4,
+            "title": "Create PaymentButton component with loading and error states",
+            "description": "Build PaymentButton component with copper gradient styling, loading states, and comprehensive error handling",
+            "dependencies": [
+              2
+            ],
+            "details": "Create src/components/PaymentButton.tsx component with primary copper gradient styling matching design system. Implement onClick handler that calls API to create checkout session and redirects to Stripe Checkout. Add loading state with spinner during session creation. Implement error handling with user-friendly messages for network errors, invalid proposals, and Stripe errors. Include disabled state for already-paid proposals. Add success callback for post-payment actions.",
+            "status": "pending",
+            "testStrategy": "Component tests for all button states (idle, loading, error, disabled), verify copper gradient styling, test error message display, validate checkout redirect flow",
+            "parentId": "undefined"
+          },
+          {
+            "id": 5,
+            "title": "Implement payment status tracking and proposal updates",
+            "description": "Add payment status tracking, automatic proposal status updates to 'paid', and revenue reporting integration",
+            "dependencies": [
+              3
+            ],
+            "details": "Extend proposal database schema with payment_status, payment_date, stripe_payment_id, and amount_paid fields. In webhook handler, update proposal status to 'paid' atomically when payment succeeds. Store Stripe payment ID and timestamp for reconciliation. Create src/lib/stripe/reporting.ts for revenue aggregation queries. Add payment history view in admin dashboard. Implement idempotency checks to prevent duplicate payment processing. Configure webhook endpoint URL in Stripe dashboard settings.",
+            "status": "pending",
+            "testStrategy": "Integration tests verifying proposal status updates on successful payment, test idempotency with duplicate webhook events, verify revenue reporting calculations, validate payment history display",
+            "parentId": "undefined"
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "version": "1.0.0",
+      "lastModified": "2025-11-09T08:24:05.347Z",
+      "taskCount": 10,
+      "completedCount": 2,
+      "tags": [
+        "master"
+      ]
+    }
+  }
+}
