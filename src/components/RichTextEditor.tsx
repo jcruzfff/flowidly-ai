@@ -19,7 +19,7 @@ import {
 
 type RichTextEditorProps = {
   content: string
-  onChange: (content: string) => void
+  onChangeAction: (content: string) => void
   disabled?: boolean
   placeholder?: string
   editable?: boolean
@@ -28,7 +28,7 @@ type RichTextEditorProps = {
 
 export default function RichTextEditor({
   content,
-  onChange,
+  onChangeAction,
   disabled = false,
   placeholder = 'Start Typing',
   editable = true,
@@ -71,7 +71,7 @@ export default function RichTextEditor({
       const text = editor.getText().trim()
       const isEmpty = !text || text === ''
       setShowPlaceholder(isEmpty)
-      onChange(html)
+      onChangeAction(html)
     },
     onFocus: ({ editor }) => {
       // Don't hide placeholder on focus - let it disappear only when user types
@@ -132,8 +132,12 @@ export default function RichTextEditor({
       editor.commands.setContent(content)
       const text = editor.getText().trim()
       const isEmpty = !text || text === ''
-      setShowPlaceholder(isEmpty)
-      setIsFirstFocus(isEmpty)
+      
+      // Use queueMicrotask to avoid setState warning
+      queueMicrotask(() => {
+        setShowPlaceholder(isEmpty)
+        setIsFirstFocus(isEmpty)
+      })
       
       // Auto-focus empty editor to show cursor
       if (isEmpty && editable && !disabled) {
@@ -157,22 +161,15 @@ export default function RichTextEditor({
   // Close color picker when toolbar closes
   useEffect(() => {
     if (!showToolbar) {
-      setShowColorPicker(false)
+      // Use queueMicrotask to avoid setState warning
+      queueMicrotask(() => {
+        setShowColorPicker(false)
+      })
     }
   }, [showToolbar])
 
   if (!editor) {
     return null
-  }
-
-  const handlePlaceholderClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (editor && !disabled) {
-      editor.commands.focus()
-      // Move cursor to end without triggering blur
-      editor.commands.setTextSelection(editor.state.doc.content.size)
-    }
   }
 
   return (

@@ -721,12 +721,8 @@ export default function ProposalEditorPage() {
                                            <div className="relative">
                                              <ElementRenderer
                                                element={element}
-                                               onChange={(updated) => handleUpdateElement(block.id, updated)}
-                                               onDelete={() => handleDeleteElement(block.id, element.id)}
-                                               onMoveUp={() => handleMoveElement(block.id, element.id, 'up')}
-                                               onMoveDown={() => handleMoveElement(block.id, element.id, 'down')}
-                                               canMoveUp={elIndex > 0}
-                                               canMoveDown={elIndex < block.content.elements!.length - 1}
+                                               onChangeAction={(updated) => handleUpdateElement(block.id, updated)}
+                                               onDeleteAction={() => handleDeleteElement(block.id, element.id)}
                                                onDragStart={() => handleElementDragStart(block.id, element.id)}
                                                onDragEnd={handleElementDragEnd}
                                                onDragOver={() => handleElementDragOver(block.id, element.id)}

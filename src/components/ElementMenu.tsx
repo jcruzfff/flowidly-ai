@@ -61,7 +61,7 @@ export default function ElementMenu({ onSelectType, trigger }: ElementMenuProps)
                       active ? 'bg-bg-hover' : ''
                     } w-full px-4 py-3.5 text-left flex items-start gap-3.5 transition-colors`}
                   >
-                    <Icon className="w-6 h-6 text-text-secondary mt-0.5 flex-shrink-0" />
+                    <Icon className="w-6 h-6 text-text-secondary mt-0.5 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="text-base font-medium text-text-primary">
                         {elementType.label}

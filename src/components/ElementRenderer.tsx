@@ -2,19 +2,14 @@
 
 import { BlockElement } from '@/types/database'
 import RichTextEditor from './RichTextEditor'
-import Button from './ui/Button'
 import { useState, useRef, useEffect, Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { ArrowUpIcon, ArrowDownIcon, LinkIcon, PaintBrushIcon, TrashIcon, CheckIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline'
+import { LinkIcon, PaintBrushIcon, TrashIcon, CheckIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline'
 
 type ElementRendererProps = {
   element: BlockElement
-  onChange: (element: BlockElement) => void
-  onDelete: () => void
-  onMoveUp?: () => void
-  onMoveDown?: () => void
-  canMoveUp?: boolean
-  canMoveDown?: boolean
+  onChangeAction: (element: BlockElement) => void
+  onDeleteAction: () => void
   onDragStart?: () => void
   onDragEnd?: () => void
   onDragOver?: () => void
@@ -27,12 +22,8 @@ type ElementRendererProps = {
 
 export default function ElementRenderer({ 
   element, 
-  onChange, 
-  onDelete,
-  onMoveUp,
-  onMoveDown,
-  canMoveUp = false,
-  canMoveDown = false,
+  onChangeAction, 
+  onDeleteAction,
   onDragStart,
   onDragEnd,
   onDragOver,
@@ -50,7 +41,6 @@ export default function ElementRenderer({
   const buttonRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLSpanElement>(null)
   const dragStartPos = useRef<{ x: number; y: number } | null>(null)
-  const handleDragInitiated = useRef(false)
   const handleDragResetTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pointerStartRef = useRef<{ x: number; y: number } | null>(null)
 
@@ -70,16 +60,17 @@ export default function ElementRenderer({
   }, [isEditingButton, isEditingLink])
 
   useEffect(() => {
+    const timeoutRef = handleDragResetTimeout.current
     return () => {
-      if (handleDragResetTimeout.current) {
-        clearTimeout(handleDragResetTimeout.current)
+      if (timeoutRef) {
+        clearTimeout(timeoutRef)
       }
       pointerStartRef.current = null
     }
   }, [])
 
   const handleContentChange = (content: string) => {
-    onChange({
+    onChangeAction({
       ...element,
       content: {
         ...element.content,
@@ -91,7 +82,7 @@ export default function ElementRenderer({
   const handleButtonTextBlur = () => {
     if (textRef.current) {
       const newText = textRef.current.textContent || 'Name your button'
-      onChange({
+      onChangeAction({
         ...element,
         content: {
           ...element.content,
@@ -102,7 +93,7 @@ export default function ElementRenderer({
   }
 
   const handleButtonLinkSave = () => {
-    onChange({
+    onChangeAction({
       ...element,
       content: {
         ...element.content,
@@ -114,7 +105,7 @@ export default function ElementRenderer({
 
   const handleButtonColorChange = (color: string) => {
     setButtonColor(color)
-    onChange({
+    onChangeAction({
       ...element,
       content: {
         ...element.content,
@@ -130,7 +121,7 @@ export default function ElementRenderer({
           <div className="w-full">
             <RichTextEditor
               content={element.content.html || ''}
-              onChange={handleContentChange}
+              onChangeAction={handleContentChange}
             />
           </div>
         )
@@ -207,7 +198,7 @@ export default function ElementRenderer({
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
-                    onDelete()
+                    onDeleteAction()
                   }}
                   className="p-2 hover:bg-error-bg rounded transition-colors"
                   title="Delete button"
@@ -385,7 +376,7 @@ export default function ElementRenderer({
           <Menu.Button 
             className="p-2 bg-white hover:bg-gray-50 rounded-lg transition-colors shadow-md border border-border-default"
             title="More options"
-            onClick={(e) => {
+            onClick={() => {
               console.log('🔵 Menu button clicked')
             }}
           >
@@ -410,7 +401,7 @@ export default function ElementRenderer({
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      onClick={(e) => {
+                      onClick={() => {
                         console.log('🔵 Copy style clicked')
                         onCopyStyle()
                       }}
@@ -428,7 +419,7 @@ export default function ElementRenderer({
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      onClick={(e) => {
+                      onClick={() => {
                         console.log('🔵 Paste style clicked')
                         onPasteStyle()
                       }}
@@ -449,9 +440,9 @@ export default function ElementRenderer({
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={(e) => {
+                    onClick={() => {
                       console.log('🔵 Delete clicked')
-                      onDelete()
+                      onDeleteAction()
                     }}
                     className={`${
                       active ? 'bg-error-bg' : ''

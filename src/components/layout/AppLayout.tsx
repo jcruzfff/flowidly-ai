@@ -84,7 +84,7 @@ export default function AppLayout({ children, user }: AppLayoutProps) {
       <nav className="sticky top-0 z-50 border-b border-border-default bg-bg-card shadow-sm">
         <div className="mx-auto px-6 py-3 flex items-center justify-between gap-6">
           {/* Left: Logo */}
-          <Link href="/proposals" className="flex items-center gap-2 flex-shrink-0">
+          <Link href="/proposals" className="flex items-center gap-2 shrink-0">
             <h1 className="text-2xl font-bold gradient-heading">Flowidly</h1>
             <Badge variant="info" size="sm">Beta</Badge>
           </Link>
@@ -102,7 +102,7 @@ export default function AppLayout({ children, user }: AppLayoutProps) {
           </div>
 
           {/* Right: Create New + User Menu */}
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
             {/* Create New Dropdown */}
             <Menu as="div" className="relative">
               <Menu.Button as={Fragment}>

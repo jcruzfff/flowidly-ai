@@ -143,7 +143,7 @@ export default function ProposalsPage() {
                 `}
               >
                 {/* Left: Checkbox placeholder */}
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className="w-5 h-5 border-2 border-border-default rounded"></div>
                 </div>
 
@@ -174,7 +174,7 @@ export default function ProposalsPage() {
                 </div>
 
                 {/* Right: Status + Actions */}
-                <div className="flex items-center gap-3 flex-shrink-0">
+                <div className="flex items-center gap-3 shrink-0">
                   <Badge
                     variant={
                       proposal.status === 'draft'
