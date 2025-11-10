@@ -11,7 +11,7 @@ import { getUserClient } from '@/lib/supabase/auth-client'
 
 export default function NewProposalPage() {
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<{ email: string; full_name?: string | null } | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -170,7 +170,7 @@ export default function NewProposalPage() {
         {/* Help Text */}
         <div className="mt-6 p-4 rounded-md bg-accent-light/20 border border-accent-light/30">
           <p className="text-sm text-text-secondary">
-            💡 <strong>Tip:</strong> After creating your page, you'll be able to add sections like hero images, 
+            💡 <strong>Tip:</strong> After creating your page, you&apos;ll be able to add sections like hero images, 
             text blocks, pricing tables, and more. You can also save any page as a template for future use.
           </p>
         </div>

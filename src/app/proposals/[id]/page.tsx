@@ -315,42 +315,6 @@ export default function ProposalEditorPage() {
     setHasUnsavedChanges(true)
   }
 
-  const handleMoveElement = (blockId: string, elementId: string, direction: 'up' | 'down') => {
-    setBlocks(blocks.map(block => {
-      if (block.id !== blockId) return block
-
-      const elements = block.content.elements || []
-      const currentIndex = elements.findIndex((el: BlockElement) => el.id === elementId)
-      
-      if (currentIndex === -1) return block
-      if (direction === 'up' && currentIndex === 0) return block
-      if (direction === 'down' && currentIndex === elements.length - 1) return block
-
-      const newElements = [...elements]
-      const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
-      
-      // Swap
-      const temp = newElements[currentIndex]
-      newElements[currentIndex] = newElements[targetIndex]
-      newElements[targetIndex] = temp
-
-      // Reorder
-      newElements.forEach((el: BlockElement, idx: number) => {
-        el.display_order = idx
-      })
-
-      return {
-        ...block,
-        content: {
-          ...block.content,
-          elements: newElements,
-        },
-      }
-    }))
-    
-    setHasUnsavedChanges(true)
-  }
-
   const handleElementDragStart = (blockId: string, elementId: string) => {
     console.log('🚀 handleElementDragStart:', blockId, elementId)
     setDraggedElement({ blockId, elementId })
@@ -740,7 +704,7 @@ export default function ProposalEditorPage() {
                                                <div className="max-w-3xl mx-auto w-full relative flex items-center gap-2">
                                                  <div className="flex-1 border-t border-border-default" />
                                                  <ElementMenu
-                                                   onSelectType={(type) => handleAddElement(block.id, type, elIndex)}
+                                                   onSelectTypeAction={(type) => handleAddElement(block.id, type, elIndex)}
                                                  />
                                                  <div className="flex-1 border-t border-border-default" />
                                                </div>
@@ -754,7 +718,7 @@ export default function ProposalEditorPage() {
                           // Empty block - show add element menu
                           <div className="py-12 flex justify-center">
                             <ElementMenu
-                              onSelectType={(type) => handleAddElement(block.id, type)}
+                              onSelectTypeAction={(type) => handleAddElement(block.id, type)}
                               trigger={
                                 <div className="flex flex-col items-center gap-3 p-6 bg-bg-hover rounded-lg border-2 border-dashed border-border-default hover:border-accent-primary transition-all cursor-pointer">
                                   <PlusIcon className="w-8 h-8 text-text-muted" />

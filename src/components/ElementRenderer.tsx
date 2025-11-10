@@ -350,7 +350,7 @@ export default function ElementRenderer({
               onDragStart()
             }
           }}
-          onDragEnd={(e) => {
+          onDragEnd={() => {
             console.log('🔵 Drag ended')
             if (onDragEnd) {
               onDragEnd()

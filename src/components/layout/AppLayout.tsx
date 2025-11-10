@@ -2,7 +2,7 @@
 
 import { Fragment, useState } from 'react'
 import Link from 'next/link'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Menu, Transition } from '@headlessui/react'
 import {
   MagnifyingGlassIcon,
@@ -24,7 +24,6 @@ type AppLayoutProps = {
 
 export default function AppLayout({ children, user }: AppLayoutProps) {
   const router = useRouter()
-  const pathname = usePathname()
   const [creating, setCreating] = useState(false)
 
   const handleSignOut = async () => {
@@ -85,7 +84,7 @@ export default function AppLayout({ children, user }: AppLayoutProps) {
         <div className="mx-auto px-6 py-3 flex items-center justify-between gap-6">
           {/* Left: Logo */}
           <Link href="/proposals" className="flex items-center gap-2 shrink-0">
-            <h1 className="text-2xl font-bold gradient-heading">Flowidly</h1>
+            <h1 className="text-2xl font-bold ">Flowidly</h1>
             <Badge variant="info" size="sm">Beta</Badge>
           </Link>
 

@@ -1,12 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import AppLayout from '@/components/layout/AppLayout'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
-import Button from '@/components/ui/Button'
 import { TrashIcon, EyeIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { getUserClient } from '@/lib/supabase/auth-client'
 
@@ -21,11 +19,10 @@ type Proposal = {
 }
 
 export default function ProposalsPage() {
-  const router = useRouter()
   const [proposals, setProposals] = useState<Proposal[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<{ email: string; full_name?: string | null } | null>(null)
 
   useEffect(() => {
     const init = async () => {

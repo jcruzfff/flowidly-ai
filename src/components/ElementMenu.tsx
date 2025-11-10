@@ -13,7 +13,7 @@ import {
 import { ElementType } from '@/types/database'
 
 type ElementMenuProps = {
-  onSelectType: (type: ElementType) => void
+  onSelectTypeAction: (type: ElementType) => void
   trigger?: React.ReactNode
 }
 
@@ -25,7 +25,7 @@ const elementTypes = [
   { type: 'divider' as ElementType, label: 'Divider', icon: MinusIcon, description: 'Visual separator' },
 ]
 
-export default function ElementMenu({ onSelectType, trigger }: ElementMenuProps) {
+export default function ElementMenu({ onSelectTypeAction, trigger }: ElementMenuProps) {
   return (
     <Menu as="div" className="relative inline-block">
       <Menu.Button className="inline-flex items-center justify-center">
@@ -56,7 +56,7 @@ export default function ElementMenu({ onSelectType, trigger }: ElementMenuProps)
               <Menu.Item key={elementType.type}>
                 {({ active }) => (
                   <button
-                    onClick={() => onSelectType(elementType.type)}
+                    onClick={() => onSelectTypeAction(elementType.type)}
                     className={`${
                       active ? 'bg-bg-hover' : ''
                     } w-full px-4 py-3.5 text-left flex items-start gap-3.5 transition-colors`}

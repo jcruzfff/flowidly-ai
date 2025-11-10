@@ -10,7 +10,7 @@ export default function Home() {
       <nav className="border-b border-border-default bg-bg-card">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold gradient-heading">
+            <h1 className="text-2xl font-bold text-text-primary">
               Flowidly
             </h1>
             <Badge variant="info" size="sm">

@@ -10,6 +10,7 @@ import { ArrowLeftIcon, PencilIcon } from '@heroicons/react/24/outline'
 type Template = {
   id: string
   title: string
+  is_template?: boolean
   created_at: string
   updated_at: string
 }
@@ -34,7 +35,7 @@ export default function FromTemplatePage() {
         throw new Error('Failed to fetch templates')
       }
       const data = await response.json()
-      const templateProposals = data.proposals.filter((p: any) => p.is_template === true)
+      const templateProposals = data.proposals.filter((p: Template) => p.is_template === true)
       setTemplates(templateProposals)
       
       // Auto-select first template
