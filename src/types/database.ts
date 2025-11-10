@@ -81,6 +81,25 @@ export type ProposalUnifiedInsert = Omit<ProposalUnified, 'id' | 'created_at' | 
 
 export type ProposalUnifiedUpdate = Partial<Omit<ProposalUnified, 'id' | 'created_by' | 'created_at' | 'updated_at'>>
 
+// Element types within a block
+export type ElementType = 'text' | 'button' | 'image' | 'video' | 'divider' | 'spacer'
+
+export type BlockElement = {
+  id: string
+  type: ElementType
+  content: {
+    html?: string
+    text?: string
+    url?: string
+    buttonText?: string
+    buttonUrl?: string
+    imageUrl?: string
+    videoUrl?: string
+    [key: string]: any
+  }
+  display_order: number
+}
+
 // Proposal Section (content for both proposals and templates)
 export type ProposalSectionUnified = {
   id: string

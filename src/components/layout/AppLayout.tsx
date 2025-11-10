@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { Menu, Transition } from '@headlessui/react'
@@ -25,11 +25,44 @@ type AppLayoutProps = {
 export default function AppLayout({ children, user }: AppLayoutProps) {
   const router = useRouter()
   const pathname = usePathname()
+  const [creating, setCreating] = useState(false)
 
   const handleSignOut = async () => {
     const response = await fetch('/api/auth/signout', { method: 'POST' })
     if (response.ok) {
       router.push('/login')
+    }
+  }
+
+  const handleCreateBlankPage = async () => {
+    if (creating) return
+    
+    setCreating(true)
+    try {
+      // Create a new blank proposal
+      const response = await fetch('/api/proposals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: 'Untitled',
+          is_template: false,
+          status: 'draft',
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create page')
+      }
+
+      const data = await response.json()
+      
+      // Navigate to the editor
+      router.push(`/proposals/${data.proposal.id}`)
+      router.refresh()
+    } catch (error) {
+      console.error('Error creating blank page:', error)
+      alert('Failed to create page. Please try again.')
+      setCreating(false)
     }
   }
 
@@ -93,17 +126,20 @@ export default function AppLayout({ children, user }: AppLayoutProps) {
                   <div className="py-1">
                     <Menu.Item>
                       {({ active }) => (
-                        <Link
-                          href="/proposals/new"
+                        <button
+                          onClick={handleCreateBlankPage}
+                          disabled={creating}
                           className={`${
                             active ? 'bg-bg-hover' : ''
-                          } block px-4 py-2.5 text-sm text-text-primary transition-colors`}
+                          } w-full text-left px-4 py-2.5 text-sm text-text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
                         >
-                          <div className="font-medium">Blank page</div>
+                          <div className="font-medium">
+                            {creating ? 'Creating...' : 'Blank page'}
+                          </div>
                           <div className="text-xs text-text-secondary mt-0.5">
                             Start from scratch
                           </div>
-                        </Link>
+                        </button>
                       )}
                     </Menu.Item>
                     <Menu.Item>

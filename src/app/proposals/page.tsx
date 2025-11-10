@@ -8,6 +8,7 @@ import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import { TrashIcon, EyeIcon, ClockIcon } from '@heroicons/react/24/outline'
+import { getUserClient } from '@/lib/supabase/auth-client'
 
 type Proposal = {
   id: string
@@ -24,9 +25,15 @@ export default function ProposalsPage() {
   const [proposals, setProposals] = useState<Proposal[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
-    fetchProposals()
+    const init = async () => {
+      const currentUser = await getUserClient()
+      setUser(currentUser)
+      fetchProposals()
+    }
+    init()
   }, [])
 
   const fetchProposals = async () => {
@@ -66,7 +73,7 @@ export default function ProposalsPage() {
 
   if (loading) {
     return (
-      <AppLayout user={null}>
+      <AppLayout user={user}>
         <div className="max-w-7xl mx-auto px-6 py-8">
           <Card className="p-8 text-center">Loading proposals...</Card>
         </div>
@@ -76,7 +83,7 @@ export default function ProposalsPage() {
 
   if (error) {
     return (
-      <AppLayout user={null}>
+      <AppLayout user={user}>
         <div className="max-w-7xl mx-auto px-6 py-8">
           <Card className="p-8 text-center text-error">Error: {error}</Card>
         </div>
@@ -85,7 +92,7 @@ export default function ProposalsPage() {
   }
 
   return (
-    <AppLayout user={null}>
+    <AppLayout user={user}>
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">

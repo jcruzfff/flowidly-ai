@@ -350,6 +350,25 @@ export async function getSession() {
 }
 
 /**
+ * Get the current user profile from public.users table (client-side)
+ * @returns User profile object or null if not found
+ */
+export async function getUserClient(): Promise<User | null> {
+  const supabase = createBrowserClient()
+  const { data: { user: authUser } } = await supabase.auth.getUser()
+  
+  if (!authUser) return null
+  
+  const { data: userProfile } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', authUser.id)
+    .single()
+  
+  return userProfile
+}
+
+/**
  * Validate password strength
  * Returns error message if password is weak, undefined if strong
  */

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
@@ -10,7 +10,7 @@ import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import { signIn } from '@/lib/supabase/auth-client'
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get('redirectTo') || '/proposals'
 
@@ -171,6 +171,22 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-bg-main flex items-center justify-center">
+        <div className="max-w-md w-full px-6">
+          <Card className="p-8">
+            <div className="text-center">Loading...</div>
+          </Card>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   )
 }
 

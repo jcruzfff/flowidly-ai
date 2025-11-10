@@ -33,20 +33,20 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+        {/* Hero Section */}
       <div className="max-w-5xl mx-auto px-6 py-20 text-center space-y-8">
         <div className="space-y-5">
-          <Badge variant="info" size="md">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent-primary mr-2"></span>
-            PROPOSAL PLATFORM
-          </Badge>
+            <Badge variant="info" size="md">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-primary mr-2"></span>
+              PROPOSAL PLATFORM
+            </Badge>
           
           <h1 className="text-5xl md:text-7xl font-bold gradient-heading tracking-tight">
             Close More Deals
           </h1>
           
           <p className="text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
-            Create, send, and track business proposals with AI-powered insights. 
+            Create, send, and track business proposals with AI-powered insights.
             Win clients faster with beautiful, professional proposals.
           </p>
         </div>
@@ -55,12 +55,12 @@ export default function Home() {
           <Link href="/signup">
             <Button variant="primary" size="lg">
               Start Free Trial
-            </Button>
+              </Button>
           </Link>
           <Link href="#features">
             <Button variant="secondary" size="lg">
-              Learn More
-            </Button>
+                Learn More
+              </Button>
           </Link>
         </div>
 
@@ -68,7 +68,7 @@ export default function Home() {
           No credit card required • Free 14-day trial
         </p>
       </div>
-
+              
       {/* Feature Cards */}
       <div id="features" className="max-w-6xl mx-auto px-6 py-16">
         <div className="text-center mb-12">
@@ -78,8 +78,8 @@ export default function Home() {
           <p className="text-text-secondary">
             Professional proposals that impress clients and close deals faster
           </p>
-        </div>
-
+              </div>
+              
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card hover className="p-8">
             <div className="w-12 h-12 bg-accent-light rounded-lg flex items-center justify-center mb-4">
@@ -154,10 +154,10 @@ export default function Home() {
               Sign in
             </Link>
           </p>
-        </Card>
-      </div>
+          </Card>
+        </div>
 
-      {/* Footer */}
+        {/* Footer */}
       <footer className="border-t border-border-default bg-bg-secondary">
         <div className="max-w-7xl mx-auto px-6 py-8 text-center text-text-muted text-sm">
           <p>

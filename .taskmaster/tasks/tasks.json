@@ -2,7 +2,7 @@
   "master": {
     "tasks": [
       {
-        "id": "1",
+        "id": 1,
         "title": "Configure Supabase project and environment setup",
         "description": "Set up Supabase project, install dependencies, and configure environment variables for database connection",
         "details": "Install @supabase/supabase-js, @supabase/ssr, @supabase/auth-helpers-nextjs. Create Supabase project at https://supabase.com, obtain project URL and anon key. Set up .env.local with NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY. Create src/lib/supabase/client.ts and server.ts with proper configuration for Next.js App Router. Test connection in development environment.",
@@ -78,7 +78,7 @@
         "updatedAt": "2025-11-09T08:02:17.597Z"
       },
       {
-        "id": "2",
+        "id": 2,
         "title": "Create comprehensive database schema with RLS policies",
         "description": "Design and implement complete database schema for proposals, templates, users, signatures, payments, and analytics",
         "details": "Create Supabase migrations for all tables: users (with role enum), proposal_templates, proposal_sections, proposals (with status enum), proposal_section_instances, signatures, payments (with Stripe IDs), proposal_events, and aggregated_metrics materialized view. Implement Row Level Security policies ensuring admins can CRUD their own data, clients can only view proposals via token. Set up storage buckets for media files and PDFs with appropriate policies. Use UUID primary keys and proper foreign key relationships.",
@@ -156,7 +156,7 @@
         "updatedAt": "2025-11-09T08:24:05.346Z"
       },
       {
-        "id": "3",
+        "id": 3,
         "title": "Implement Avyra brand design system in Tailwind CSS",
         "description": "Configure Tailwind CSS with Avyra brand colors, typography, and component utilities from minibrandguide.txt",
         "details": "Create tailwind.config.ts with complete Avyra color palette: #08090A (bg-main), #101011 (bg-card), #F7F8F8 (text-primary), #f2c6a6 (accent-primary), etc. Configure Inter and Instrument Serif fonts. Set up spacing scale (4px to 96px). Update globals.css with brand-specific classes: .input-linear, .btn-primary, .btn-secondary, .card-linear, .shadow-linear variants. Implement custom scrollbar styling, gradient definitions for hero backgrounds and buttons, and hover state animations. Build base UI components: Button (primary copper gradient, secondary), Card, Input, Badge, following exact specifications from brand guide.",
@@ -234,7 +234,7 @@
         "updatedAt": "2025-11-09T09:02:39.918Z"
       },
       {
-        "id": "4",
+        "id": 4,
         "title": "Define TypeScript types and interfaces",
         "description": "Create comprehensive TypeScript definitions for all database entities and API responses",
         "details": "Generate types from Supabase schema using supabase gen types. Create src/types/ directory with proposal.ts, analytics.ts, database.ts. Define interfaces for Proposal, Template, Section, User, Signature, Payment, Event with proper typing for enums (ProposalStatus, EventType, PaymentStatus). Include API response types, form validation schemas using Zod, and utility types for frontend components. Export all types from index.ts barrel file.",
@@ -313,7 +313,7 @@
         "updatedAt": "2025-11-09T09:13:38.966Z"
       },
       {
-        "id": "5",
+        "id": 5,
         "title": "Build authentication system with Supabase Auth",
         "description": "Implement secure admin authentication with session management and route protection",
         "status": "done",
@@ -393,7 +393,7 @@
         "updatedAt": "2025-11-10T00:04:50.644Z"
       },
       {
-        "id": "6",
+        "id": 6,
         "title": "Create proposal template management system",
         "description": "Build CRUD interface for managing reusable proposal templates with modular sections",
         "details": "Create src/app/api/templates route handlers for CRUD operations. Build src/app/(admin)/templates page with template listing (card grid layout), create/edit forms using Avyra components. Implement section library management with drag-and-drop ordering, rich text editor for content (use @tiptap/react with dark theme). Add template duplication feature, version history tracking, and section toggle management. Use React Hook Form with Zod validation for form handling.",
@@ -404,7 +404,7 @@
           "3",
           "5"
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -465,15 +465,16 @@
               3
             ],
             "details": "Add duplicate functionality to template cards and detail pages that creates a copy of the template with '(Copy)' suffix. Implement version history tracking by storing snapshots of template changes with timestamps and user information. Create a version history UI component showing list of versions with diff preview. Add ability to restore previous versions. Store version data in database with proper relationships. Include API endpoints for duplication (POST /api/templates/[id]/duplicate) and version retrieval.",
-            "status": "pending",
+            "status": "cancelled",
             "testStrategy": "E2E tests for template duplication ensuring all sections and content are copied correctly, version history tracking after edits, and version restoration functionality",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-10T03:01:18.385Z"
           }
         ],
-        "updatedAt": "2025-11-10T00:22:08.606Z"
+        "updatedAt": "2025-11-10T03:02:39.493Z"
       },
       {
-        "id": "7",
+        "id": 7,
         "title": "Implement proposal creation and link generation",
         "description": "Build proposal authoring interface with manual data entry and secure link generation",
         "details": "Create src/app/api/proposals route handlers with CRUD operations. Build src/app/(admin)/proposals/new page with comprehensive form: client details, project scope, pricing tables, timeline selection. Implement template population logic merging proposal data with selected template. Add section toggle controls with real-time preview. Create secure token generation using crypto.randomBytes(32), store in database with expiration timestamps. Generate shareable URLs with format /p/[token]. Include proposal status management (draft, sent, viewed, signed, paid).",
@@ -483,7 +484,7 @@
           "6",
           "4"
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": [
           {
             "id": 1,
@@ -491,9 +492,10 @@
             "description": "Build src/app/api/proposals route handlers with full CRUD functionality for managing proposals",
             "dependencies": [],
             "details": "Create src/app/api/proposals/route.ts with POST (create), GET (list), and individual proposal routes at src/app/api/proposals/[id]/route.ts with GET (read), PATCH (update), DELETE operations. Implement database queries using Supabase client to interact with proposals table. Include validation for all input fields, error handling, and proper HTTP status codes. Ensure authentication middleware is applied to protect routes.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test all CRUD endpoints with various payloads, verify authentication requirements, test error handling for invalid data, validate database transactions and rollback scenarios",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-10T03:03:16.364Z"
           },
           {
             "id": 2,
@@ -502,10 +504,11 @@
             "dependencies": [
               1
             ],
-            "details": "Build comprehensive form component at src/app/(admin)/proposals/new/page.tsx including sections for: client details (name, email, company), project scope (description, deliverables), dynamic pricing tables with line items (description, quantity, rate, total), timeline selection with date pickers. Use Avyra design system components (.input-linear, .btn-primary). Implement form state management with React Hook Form or similar. Add validation rules for required fields and pricing calculations. Include auto-save draft functionality.",
-            "status": "pending",
+            "details": "Build comprehensive form component at src/app/(admin)/proposals/new/page.tsx including sections for: client details (name, email, company), project scope (description, deliverables), dynamic pricing tables with line items (description, quantity, rate, total), timeline selection with date pickers. Use Avyra design system components (.input-linear, .btn-primary). Implement form state management with React Hook Form or similar. Add validation rules for required fields and pricing calculations. Include auto-save draft functionality.\n<info added on 2025-11-10T03:41:54.815Z>\nRedesigned as Qwilr-style site builder with full-width content blocks. Each block spans entire viewport width with seamless transitions. Implemented floating selection toolbar appearing on text selection with formatting controls: bold, italic, strikethrough, text alignment (left/center/right), bullet/numbered lists, and link insertion. Added 6-dot drag handle menu on left side of each block for reordering via drag-and-drop. Positioned action toolbar in top-right corner with block-level operations (duplicate, delete, convert type). New blocks default to H1 heading style. Removed traditional form sections in favor of inline editing within blocks. Maintained Avyra design system styling for toolbar buttons and block containers.\n</info added on 2025-11-10T03:41:54.815Z>\n<info added on 2025-11-10T04:18:13.517Z>\nEnhanced editor UX with improved visibility and interaction patterns: blocks now display by default with action menus visible (no hover required), added subtle bottom borders between blocks for clear visual separation, implemented functional color picker in left-side 6-dot drag menu allowing users to set custom background colors per block, added automatic first block creation on fresh pages initialized as H1 heading ready for immediate typing without requiring user to manually add initial content.\n</info added on 2025-11-10T04:18:13.517Z>",
+            "status": "done",
             "testStrategy": "Test form validation for all required fields, verify pricing calculations are accurate, test auto-save functionality, validate date picker behavior, test form submission with complete and partial data",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-10T03:06:01.714Z"
           },
           {
             "id": 3,
@@ -544,10 +547,11 @@
             "testStrategy": "Test URL generation and validation, verify public route renders correctly for valid tokens, test all status transitions and validations, verify status change notifications, test proposal list filtering and sorting by status",
             "parentId": "undefined"
           }
-        ]
+        ],
+        "updatedAt": "2025-11-10T03:06:01.714Z"
       },
       {
-        "id": "8",
+        "id": 8,
         "title": "Build responsive proposal rendering for clients",
         "description": "Create beautiful, mobile-first proposal pages with Avyra branding for client viewing experience",
         "details": "Create src/app/p/[token] route with server-side rendering for SEO. Build ProposalRenderer component with responsive layout using Avyra brand styling: dark gradient background, section cards with #101011 background and #1B1C1D borders, hero heading with radial gradient text effect. Implement PricingTable component with proper currency formatting, line item display, and visual hierarchy. Add lazy loading for media content, smooth scroll animations using Framer Motion, and section toggle respect. Include mobile-first responsive design with breakpoints at 640px/1024px.",
@@ -623,7 +627,7 @@
         ]
       },
       {
-        "id": "9",
+        "id": 9,
         "title": "Implement e-signature capture system",
         "description": "Build legally compliant signature collection with audit trail and PDF generation",
         "details": "Create SignatureCanvas component using HTML5 canvas or react-signature-canvas for drawing, plus typed signature input with .input-linear styling. Implement src/app/api/signatures route for storing signature data, timestamp, IP address, and user agent. Add signature verification and immutable audit trail storage. Generate PDF snapshots using @react-pdf/renderer or puppeteer with proposal content and embedded signature. Store PDFs in Supabase Storage and update proposal status to 'signed' atomically.",
@@ -695,7 +699,7 @@
         ]
       },
       {
-        "id": "10",
+        "id": 10,
         "title": "Integrate Stripe payment processing",
         "description": "Implement secure payment collection with Stripe Checkout and webhook handling",
         "details": "Install stripe package, create Stripe account in test mode. Build src/lib/stripe/client.ts for creating checkout sessions with line items from proposal pricing. Create src/app/api/stripe/webhook route for handling payment events with signature verification. Implement PaymentButton component with primary copper gradient styling, loading states, and success/error handling. Add payment status tracking, automatic proposal status updates to 'paid', and revenue reporting integration. Configure webhook endpoints in Stripe dashboard.",
@@ -769,12 +773,14 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-11-10T00:22:08.607Z",
+      "lastModified": "2025-11-10T03:06:01.715Z",
       "taskCount": 10,
-      "completedCount": 5,
+      "completedCount": 6,
       "tags": [
         "master"
-      ]
+      ],
+      "created": "2025-11-10T03:41:47.910Z",
+      "description": "Tasks for master context"
     }
   }
 }
