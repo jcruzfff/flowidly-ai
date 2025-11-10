@@ -1,14 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter, useParams } from 'next/navigation'
+import { useState, useEffect, useCallback } from 'react'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Menu, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import Input from '@/components/ui/Input'
-import RichTextEditor from '@/components/RichTextEditor'
 import { getUserClient } from '@/lib/supabase/auth-client'
 import { ProposalUnified, ProposalSectionUnified, BlockElement, ElementType } from '@/types/database'
 import ElementRenderer from '@/components/ElementRenderer'
@@ -20,8 +17,6 @@ import {
   ArrowDownIcon,
   DocumentDuplicateIcon,
   TrashIcon,
-  PaintBrushIcon,
-  EllipsisVerticalIcon,
 } from '@heroicons/react/24/outline'
 
 type Block = ProposalSectionUnified & {
@@ -30,11 +25,10 @@ type Block = ProposalSectionUnified & {
 }
 
 export default function ProposalEditorPage() {
-  const router = useRouter()
   const params = useParams()
   const proposalId = params.id as string
 
-  const [user, setUser] = useState<any>(null)
+  const [, setUser] = useState<{ id: string; email?: string } | null>(null)
   const [proposal, setProposal] = useState<ProposalUnified | null>(null)
   const [blocks, setBlocks] = useState<Block[]>([])
   const [title, setTitle] = useState('Untitled')
@@ -42,22 +36,12 @@ export default function ProposalEditorPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
-  const [copiedStyle, setCopiedStyle] = useState<string | null>(null)
   const [copiedElementStyle, setCopiedElementStyle] = useState<string | null>(null)
   const [draggedElement, setDraggedElement] = useState<{ blockId: string; elementId: string } | null>(null)
   const [dropTargetElement, setDropTargetElement] = useState<{ blockId: string; elementId: string } | null>(null)
   const [showBlockColorPicker, setShowBlockColorPicker] = useState<string | null>(null)
 
-  useEffect(() => {
-    const init = async () => {
-      const currentUser = await getUserClient()
-      setUser(currentUser)
-      await fetchProposal()
-    }
-    init()
-  }, [proposalId])
-
-  const fetchProposal = async () => {
+  const fetchProposal = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
@@ -112,7 +96,16 @@ export default function ProposalEditorPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [proposalId])
+
+  useEffect(() => {
+    const init = async () => {
+      const currentUser = await getUserClient()
+      setUser(currentUser)
+      await fetchProposal()
+    }
+    init()
+  }, [fetchProposal])
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value)
@@ -282,7 +275,7 @@ export default function ProposalEditorPage() {
       if (block.id !== blockId) return block
 
       const elements = block.content.elements || []
-      const updatedElements = elements.map(el =>
+      const updatedElements = elements.map((el: BlockElement) =>
         el.id === element.id ? element : el
       )
 
@@ -303,10 +296,10 @@ export default function ProposalEditorPage() {
       if (block.id !== blockId) return block
 
       const elements = block.content.elements || []
-      const newElements = elements.filter(el => el.id !== elementId)
+      const newElements = elements.filter((el: BlockElement) => el.id !== elementId)
 
       // Reorder
-      newElements.forEach((el, idx) => {
+      newElements.forEach((el: BlockElement, idx: number) => {
         el.display_order = idx
       })
 
@@ -327,7 +320,7 @@ export default function ProposalEditorPage() {
       if (block.id !== blockId) return block
 
       const elements = block.content.elements || []
-      const currentIndex = elements.findIndex(el => el.id === elementId)
+      const currentIndex = elements.findIndex((el: BlockElement) => el.id === elementId)
       
       if (currentIndex === -1) return block
       if (direction === 'up' && currentIndex === 0) return block
@@ -342,7 +335,7 @@ export default function ProposalEditorPage() {
       newElements[targetIndex] = temp
 
       // Reorder
-      newElements.forEach((el, idx) => {
+      newElements.forEach((el: BlockElement, idx: number) => {
         el.display_order = idx
       })
 
@@ -389,8 +382,8 @@ export default function ProposalEditorPage() {
       // Same block reordering
       if (sourceBlockId === targetBlockId && block.id === sourceBlockId) {
         const elements = block.content.elements || []
-        const sourceIndex = elements.findIndex(el => el.id === sourceElementId)
-        const targetIndex = elements.findIndex(el => el.id === targetElementId)
+        const sourceIndex = elements.findIndex((el: BlockElement) => el.id === sourceElementId)
+        const targetIndex = elements.findIndex((el: BlockElement) => el.id === targetElementId)
 
         if (sourceIndex === -1 || targetIndex === -1) return block
 
@@ -399,7 +392,7 @@ export default function ProposalEditorPage() {
         newElements.splice(targetIndex, 0, movedElement)
 
         // Reorder
-        newElements.forEach((el, idx) => {
+        newElements.forEach((el: BlockElement, idx: number) => {
           el.display_order = idx
         })
 
@@ -424,7 +417,7 @@ export default function ProposalEditorPage() {
     const block = blocks.find(b => b.id === blockId)
     if (!block) return
 
-    const element = block.content.elements?.find(el => el.id === elementId)
+    const element = block.content.elements?.find((el: BlockElement) => el.id === elementId)
     if (!element) return
 
     setCopiedElementStyle(JSON.stringify({
@@ -444,7 +437,7 @@ export default function ProposalEditorPage() {
         if (block.id !== blockId) return block
 
         const elements = block.content.elements || []
-        const updatedElements = elements.map(el => {
+        const updatedElements = elements.map((el: BlockElement) => {
           if (el.id !== elementId) return el
           
           return {
@@ -469,32 +462,6 @@ export default function ProposalEditorPage() {
       setHasUnsavedChanges(true)
     } catch (err) {
       console.error('Failed to paste element style:', err)
-    }
-  }
-
-  const handleCopyStyle = (blockId: string) => {
-    const block = blocks.find(b => b.id === blockId)
-    if (block) {
-      setCopiedStyle(JSON.stringify({
-        background_color: block.background_color,
-        // Add more style properties here as needed
-      }))
-    }
-  }
-
-  const handlePasteStyle = (blockId: string) => {
-    if (!copiedStyle) return
-    
-    try {
-      const style = JSON.parse(copiedStyle)
-      setBlocks(blocks.map(block =>
-        block.id === blockId
-          ? { ...block, ...style }
-          : block
-      ))
-      setHasUnsavedChanges(true)
-    } catch (err) {
-      console.error('Failed to paste style:', err)
     }
   }
 
@@ -735,8 +702,8 @@ export default function ProposalEditorPage() {
                                {block.content.elements && block.content.elements.length > 0 ? (
                                  <>
                                    {block.content.elements
-                                     .sort((a, b) => a.display_order - b.display_order)
-                                     .map((element, elIndex) => {
+                                     .sort((a: BlockElement, b: BlockElement) => a.display_order - b.display_order)
+                                     .map((element: BlockElement, elIndex: number) => {
                                        const isLastElement = elIndex === block.content.elements!.length - 1
                                        const isDragging = draggedElement?.blockId === block.id && draggedElement?.elementId === element.id
                                        const isDropTarget = dropTargetElement?.blockId === block.id && dropTargetElement?.elementId === element.id
