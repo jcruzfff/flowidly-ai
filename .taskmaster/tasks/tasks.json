@@ -404,7 +404,7 @@
           "3",
           "5"
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": [
           {
             "id": 1,
@@ -412,9 +412,10 @@
             "description": "Implement REST API endpoints in src/app/api/templates for creating, reading, updating, and deleting proposal templates with proper error handling and validation",
             "dependencies": [],
             "details": "Create route handlers in src/app/api/templates/route.ts for GET (list all templates), POST (create new template). Create src/app/api/templates/[id]/route.ts for GET (single template), PATCH (update), DELETE operations. Integrate with Supabase client for database operations. Implement proper error handling, status codes, and JSON responses. Add authentication checks to ensure only authorized users can perform operations.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "API integration tests for all CRUD operations including success cases, error cases, validation failures, and unauthorized access attempts",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-10T00:08:22.983Z"
           },
           {
             "id": 2,
@@ -424,9 +425,10 @@
               1
             ],
             "details": "Create src/app/(admin)/templates/page.tsx with card grid layout using Avyra components. Display template cards showing title, description, preview, last modified date, and action buttons (edit, duplicate, delete). Implement search functionality to filter templates by name. Add sorting options (by date, name). Include a 'Create New Template' button. Use React Query or SWR for data fetching and caching. Ensure responsive design for mobile and desktop.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "E2E tests for template listing page load, search functionality, sorting, and navigation to create/edit pages",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-10T00:10:05.284Z"
           },
           {
             "id": 3,
@@ -436,9 +438,10 @@
               1
             ],
             "details": "Create src/app/(admin)/templates/new and src/app/(admin)/templates/[id]/edit pages. Use React Hook Form for form state management. Define Zod schemas for template validation (title, description, sections). Implement form fields using Avyra components (inputs, textareas, buttons). Add client-side and server-side validation. Display validation errors inline. Handle form submission with loading states and success/error notifications. Include cancel and save actions.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "E2E tests for template creation workflow, form validation (required fields, character limits), successful save, and error handling",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-10T00:11:46.836Z"
           },
           {
             "id": 4,
@@ -448,9 +451,10 @@
               3
             ],
             "details": "Integrate @tiptap/react with dark theme for rich text editing of section content. Implement drag-and-drop functionality using @dnd-kit/core or react-beautiful-dnd for section reordering. Create section components with toggle switches to enable/disable sections. Build section library UI showing available sections with add/remove capabilities. Store section order and enabled state in template data. Ensure rich text editor supports formatting (bold, italic, lists, headings) and maintains content integrity.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "E2E tests verifying section ordering works correctly, rich text content is saved and displayed properly, section toggles persist state, and drag-and-drop functionality across different positions",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-11-10T00:22:08.606Z"
           },
           {
             "id": 5,
@@ -465,7 +469,8 @@
             "testStrategy": "E2E tests for template duplication ensuring all sections and content are copied correctly, version history tracking after edits, and version restoration functionality",
             "parentId": "undefined"
           }
-        ]
+        ],
+        "updatedAt": "2025-11-10T00:22:08.606Z"
       },
       {
         "id": "7",
@@ -764,7 +769,7 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-11-10T00:04:50.644Z",
+      "lastModified": "2025-11-10T00:22:08.607Z",
       "taskCount": 10,
       "completedCount": 5,
       "tags": [

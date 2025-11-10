@@ -12,7 +12,7 @@ import { signIn } from '@/lib/supabase/auth-client'
 
 export default function LoginPage() {
   const searchParams = useSearchParams()
-  const redirectTo = searchParams.get('redirectTo') || '/dashboard'
+  const redirectTo = searchParams.get('redirectTo') || '/proposals'
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

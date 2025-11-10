@@ -90,9 +90,9 @@ export default function SignupPage() {
       setRequiresConfirmation(result.requiresEmailConfirmation || false)
 
       if (!result.requiresEmailConfirmation) {
-        // Auto sign-in was successful, redirect to dashboard
+        // Auto sign-in was successful, redirect to proposals
         setTimeout(() => {
-          router.push('/dashboard')
+          router.push('/proposals')
           router.refresh()
         }, 2000)
       }
@@ -135,7 +135,7 @@ export default function SignupPage() {
                 </p>
               ) : (
                 <p className="text-text-secondary">
-                  Your account has been created successfully. Redirecting you to the dashboard...
+                  Your account has been created successfully. Redirecting you to your workspace...
                 </p>
               )}
             </div>

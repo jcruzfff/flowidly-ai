@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 /**
  * Middleware for route protection and session management
- * Protects /dashboard and /proposals routes
+ * Protects /proposals routes
  * Refreshes user sessions automatically
  */
 export async function middleware(request: NextRequest) {
@@ -55,8 +55,7 @@ export async function middleware(request: NextRequest) {
   console.log('🛡️ [middleware] Auth cookies:', authCookies.length, 'found')
 
   // Protected routes that require authentication
-  const isProtectedRoute =
-    path.startsWith('/dashboard') || path.startsWith('/proposals')
+  const isProtectedRoute = path.startsWith('/proposals')
 
   // Auth routes that authenticated users shouldn't access
   const isAuthRoute =
@@ -87,33 +86,10 @@ export async function middleware(request: NextRequest) {
     const redirectUrl = request.nextUrl.clone()
     // Check if there's a redirectTo parameter
     const redirectTo = request.nextUrl.searchParams.get('redirectTo')
-    redirectUrl.pathname = redirectTo || '/dashboard'
+    redirectUrl.pathname = redirectTo || '/proposals'
     redirectUrl.searchParams.delete('redirectTo')
     console.log('🔄 [middleware] Redirecting to:', redirectUrl.pathname)
     return NextResponse.redirect(redirectUrl)
-  }
-
-  // Check user role for admin routes
-  if (path.startsWith('/dashboard') && user) {
-    console.log('🔐 [middleware] Checking admin role for dashboard access')
-    // Fetch user profile to check role
-    const { data: userProfile } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', user.id)
-      .single()
-
-    console.log('👤 [middleware] User profile:', userProfile)
-
-    // If no user profile exists or user is not admin, redirect to home
-    if (!userProfile || userProfile.role !== 'admin') {
-      console.log('🚫 [middleware] Access denied - not an admin')
-      const redirectUrl = request.nextUrl.clone()
-      redirectUrl.pathname = '/'
-      return NextResponse.redirect(redirectUrl)
-    }
-    
-    console.log('✅ [middleware] Admin access granted')
   }
 
   console.log('✅ [middleware] Request allowed to proceed')

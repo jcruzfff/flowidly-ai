@@ -97,3 +97,116 @@ body {
   outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
 }
+
+/* =====================================================
+   PROSE STYLES FOR RICH TEXT EDITOR
+   ===================================================== */
+
+.prose {
+  color: var(--color-text-primary);
+  max-width: 65ch;
+}
+
+.prose p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.prose h2 {
+  font-size: 1.5em;
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.prose h3 {
+  font-size: 1.25em;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+.prose strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.prose em {
+  font-style: italic;
+}
+
+.prose ul, .prose ol {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose blockquote {
+  border-left: 4px solid var(--color-accent-primary);
+  padding-left: 1em;
+  margin: 1.5em 0;
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--color-border-default);
+  margin: 2em 0;
+}
+
+.prose a {
+  color: var(--color-accent-primary);
+  text-decoration: underline;
+}
+
+.prose a:hover {
+  color: var(--color-accent-hover);
+}
+
+.prose code {
+  background-color: var(--color-bg-secondary);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-family: monospace;
+}
+
+.prose-sm {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.prose-sm p {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+.prose-sm h2 {
+  font-size: 1.25em;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+.prose-sm h3 {
+  font-size: 1.125em;
+  margin-top: 1em;
+  margin-bottom: 0.375em;
+}
