@@ -5,17 +5,19 @@ import Link from 'next/link'
 import AppLayout from '@/components/layout/AppLayout'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
-import { TrashIcon, EyeIcon, ClockIcon } from '@heroicons/react/24/outline'
+import { TrashIcon, EyeIcon, ClockIcon, LinkIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { getUserClient } from '@/lib/supabase/auth-client'
+import { generateShareableUrl } from '@/lib/utils/tokens'
 
 type Proposal = {
   id: string
   title: string
   client_name: string | null
-  status: 'draft' | 'sent' | 'viewed' | 'accepted' | 'rejected' | 'paid' | null
+  status: 'draft' | 'sent' | 'viewed' | 'accepted' | 'signed' | 'paid' | null
   view_count: number
   created_at: string
   updated_at: string
+  access_token: string | null
 }
 
 export default function ProposalsPage() {
@@ -23,6 +25,7 @@ export default function ProposalsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [user, setUser] = useState<{ email: string; full_name?: string | null } | null>(null)
+  const [copiedId, setCopiedId] = useState<string | null>(null)
 
   useEffect(() => {
     const init = async () => {
@@ -65,6 +68,28 @@ export default function ProposalsPage() {
       fetchProposals() // Refresh list
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete proposal')
+    }
+  }
+
+  const handleCopyLink = async (e: React.MouseEvent, proposal: Proposal) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!proposal.access_token) {
+      alert('This proposal does not have a shareable link yet.')
+      return
+    }
+
+    const baseUrl = window.location.origin
+    const shareableUrl = generateShareableUrl(proposal.access_token, baseUrl)
+
+    try {
+      await navigator.clipboard.writeText(shareableUrl)
+      setCopiedId(proposal.id)
+      setTimeout(() => setCopiedId(null), 2000)
+    } catch (err) {
+      console.error('Failed to copy link:', err)
+      alert('Failed to copy link to clipboard')
     }
   }
 
@@ -171,23 +196,42 @@ export default function ProposalsPage() {
                 </div>
 
                 {/* Right: Status + Actions */}
-                <div className="flex items-center gap-3 shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
                   <Badge
                     variant={
                       proposal.status === 'draft'
-                        ? 'info'
+                        ? 'default'
                         : proposal.status === 'sent'
-                        ? 'warning'
-                        : proposal.status === 'viewed'
                         ? 'info'
+                        : proposal.status === 'viewed'
+                        ? 'warning'
                         : proposal.status === 'accepted'
                         ? 'success'
-                        : 'info'
+                        : proposal.status === 'signed'
+                        ? 'success'
+                        : proposal.status === 'paid'
+                        ? 'success'
+                        : 'default'
                     }
                     size="sm"
                   >
-                    {proposal.status ? proposal.status.toUpperCase() : 'DRAFT'}
+                    {proposal.status ? proposal.status.charAt(0).toUpperCase() + proposal.status.slice(1) : 'Draft'}
                   </Badge>
+
+                  {proposal.access_token && (
+                    <button
+                      onClick={(e) => handleCopyLink(e, proposal)}
+                      className="p-1.5 hover:bg-bg-secondary rounded transition-colors"
+                      aria-label="Copy share link"
+                      title="Copy share link"
+                    >
+                      {copiedId === proposal.id ? (
+                        <CheckIcon className="w-4 h-4 text-success" />
+                      ) : (
+                        <LinkIcon className="w-4 h-4 text-text-muted hover:text-accent-primary" />
+                      )}
+                    </button>
+                  )}
 
                   <button
                     onClick={(e) => {

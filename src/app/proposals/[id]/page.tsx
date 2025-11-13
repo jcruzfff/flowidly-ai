@@ -10,6 +10,7 @@ import { getUserClient } from '@/lib/supabase/auth-client'
 import { ProposalUnified, ProposalSectionUnified, BlockElement, ElementType } from '@/types/database'
 import ElementRenderer from '@/components/ElementRenderer'
 import ElementMenu from '@/components/ElementMenu'
+import AuditTrail from '@/components/AuditTrail'
 import { HexColorPicker } from 'react-colorful'
 import {
   PlusIcon,
@@ -17,6 +18,8 @@ import {
   ArrowDownIcon,
   DocumentDuplicateIcon,
   TrashIcon,
+  ClockIcon,
+  LinkIcon,
 } from '@heroicons/react/24/outline'
 
 type Block = ProposalSectionUnified & {
@@ -40,6 +43,8 @@ export default function ProposalEditorPage() {
   const [draggedElement, setDraggedElement] = useState<{ blockId: string; elementId: string } | null>(null)
   const [dropTargetElement, setDropTargetElement] = useState<{ blockId: string; elementId: string } | null>(null)
   const [showBlockColorPicker, setShowBlockColorPicker] = useState<string | null>(null)
+  const [showAuditTrail, setShowAuditTrail] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
 
   const fetchProposal = useCallback(async () => {
     setLoading(true)
@@ -429,6 +434,48 @@ export default function ProposalEditorPage() {
     }
   }
 
+  const handleCopyShareLink = async () => {
+    // If no token exists, generate one first
+    if (!proposal?.access_token) {
+      try {
+        const response = await fetch(`/api/proposals/${proposalId}/regenerate-token`, {
+          method: 'POST',
+        })
+        
+        if (!response.ok) {
+          throw new Error('Failed to generate link')
+    }
+        
+        const data = await response.json()
+        const baseUrl = window.location.origin
+        const shareUrl = `${baseUrl}/p/${data.access_token}`
+        
+        await navigator.clipboard.writeText(shareUrl)
+        setLinkCopied(true)
+        setTimeout(() => setLinkCopied(false), 2000)
+        
+        // Refresh proposal to get the new token
+        fetchProposal()
+      } catch (err) {
+        console.error('Failed to generate link:', err)
+        alert('Failed to generate shareable link')
+      }
+      return
+    }
+
+    const baseUrl = window.location.origin
+    const shareUrl = `${baseUrl}/p/${proposal.access_token}`
+
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setLinkCopied(true)
+      setTimeout(() => setLinkCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy link:', err)
+      alert('Failed to copy link to clipboard')
+    }
+  }
+
   const handleSave = async () => {
     setSaving(true)
     setError(null)
@@ -529,6 +576,27 @@ export default function ProposalEditorPage() {
             ← Back to Pages
           </Link>
           
+          <div className="flex items-center gap-3">
+            {proposal?.access_token && (
+              <Button
+                variant="ghost"
+                size="md"
+                onClick={handleCopyShareLink}
+              >
+                <LinkIcon className="w-5 h-5 mr-2" />
+                {linkCopied ? 'Copied!' : 'Copy Share Link'}
+              </Button>
+            )}
+            
+            <Button
+              variant="ghost"
+              size="md"
+              onClick={() => setShowAuditTrail(!showAuditTrail)}
+            >
+              <ClockIcon className="w-5 h-5 mr-2" />
+              {showAuditTrail ? 'Hide' : 'Show'} Audit Trail
+            </Button>
+          
           <Button
             variant="primary"
             size="md"
@@ -537,6 +605,7 @@ export default function ProposalEditorPage() {
           >
             {saving ? 'Saving...' : 'Save'}
           </Button>
+          </div>
         </div>
       </nav>
 
@@ -637,9 +706,9 @@ export default function ProposalEditorPage() {
                               
                               {/* Hex Input */}
                               <div className="mt-3 flex items-center gap-2">
-                                <input
+                          <input
                                   type="text"
-                                  value={block.background_color || '#FFFFFF'}
+                            value={block.background_color || '#FFFFFF'}
                                   onChange={(e) => {
                                     const color = e.target.value
                                     if (/^#[0-9A-F]{6}$/i.test(color)) {
@@ -648,7 +717,7 @@ export default function ProposalEditorPage() {
                                   }}
                                   className="flex-1 px-3 py-2 bg-bg-main border border-border-default rounded-lg text-sm text-text-primary focus:outline-none focus:border-accent-primary"
                                   placeholder="#FFFFFF"
-                                />
+                          />
                               </div>
                             </div>
                           </>
@@ -747,6 +816,26 @@ export default function ProposalEditorPage() {
           </div>
         )}
       </div>
+
+      {/* Audit Trail Sidebar */}
+      {showAuditTrail && (
+        <div className="fixed top-0 right-0 h-screen w-96 bg-bg-card border-l border-border-default shadow-xl z-50 overflow-y-auto">
+          <div className="sticky top-0 bg-bg-card border-b border-border-default p-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-text-primary">Audit Trail</h2>
+            <button
+              onClick={() => setShowAuditTrail(false)}
+              className="p-2 hover:bg-bg-hover rounded-lg transition-colors"
+            >
+              <svg className="w-5 h-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div className="p-4">
+            <AuditTrail proposalId={proposalId} />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

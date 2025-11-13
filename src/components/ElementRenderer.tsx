@@ -367,9 +367,9 @@ export default function ElementRenderer({
             <div className="w-1 h-1 rounded-full bg-text-muted"></div>
             <div className="w-1 h-1 rounded-full bg-text-muted"></div>
           </div>
+          </div>
         </div>
-      </div>
-
+        
       {/* Menu trigger - right side */}
       <div className="absolute -right-8 top-[6px]  z-10 opacity-0 group-hover/element:opacity-100 transition-opacity">
         <Menu as="div" className="relative">

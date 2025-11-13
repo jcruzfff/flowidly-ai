@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import type { ProposalUnifiedInsert } from '@/types/database'
+import { generateSecureToken, generateTokenExpiration } from '@/lib/utils/tokens'
+import { recordProposalEvent, getIpAddress, getUserAgent } from '@/lib/audit/events'
 
 /**
  * GET /api/proposals
@@ -56,6 +58,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Title is required' }, { status: 400 })
   }
 
+  // Generate secure access token and expiration for non-template proposals
+  const accessToken = is_template ? null : generateSecureToken()
+  const tokenExpiration = is_template ? null : generateTokenExpiration(30) // 30 days
+
   const newProposal: ProposalUnifiedInsert = {
     created_by: user.id,
     title,
@@ -64,6 +70,8 @@ export async function POST(request: Request) {
     client_email,
     client_company,
     status: is_template ? null : 'draft',
+    access_token: accessToken,
+    token_expires_at: tokenExpiration,
   }
 
   const { data, error } = await supabase
@@ -76,6 +84,25 @@ export async function POST(request: Request) {
     console.error('Error creating proposal:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  // Record CREATED event in audit trail
+  const ipAddress = getIpAddress(request)
+  const userAgent = getUserAgent(request)
+  
+  await recordProposalEvent(
+    data.id,
+    'CREATED',
+    {
+      title: data.title,
+      is_template: data.is_template,
+      client_name: data.client_name,
+    },
+    {
+      userEmail: user.email,
+      ipAddress,
+      userAgent,
+    }
+  )
 
   return NextResponse.json({ proposal: data }, { status: 201 })
 }

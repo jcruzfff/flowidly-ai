@@ -68,6 +68,8 @@ export type ProposalUnified = {
   status?: 'draft' | 'sent' | 'viewed' | 'accepted' | 'rejected' | 'paid' | null
   token?: string | null
   token_expires_at?: string | null
+  access_token?: string | null // New: secure token for public access via /p/[token]
+  viewed_at?: string | null // New: first time proposal was viewed by client
   view_count: number
   last_viewed_at?: string | null
   accepted_at?: string | null

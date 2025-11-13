@@ -135,8 +135,8 @@ export default function RichTextEditor({
       
       // Use queueMicrotask to avoid setState warning
       queueMicrotask(() => {
-        setShowPlaceholder(isEmpty)
-        setIsFirstFocus(isEmpty)
+      setShowPlaceholder(isEmpty)
+      setIsFirstFocus(isEmpty)
       })
       
       // Auto-focus empty editor to show cursor

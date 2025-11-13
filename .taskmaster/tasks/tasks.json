@@ -484,7 +484,7 @@
           "6",
           "4"
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -518,7 +518,7 @@
               2
             ],
             "details": "Create template merging utility that takes proposal form data and selected template ID, then populates template placeholders with actual values. Implement section toggle controls allowing users to enable/disable template sections (e.g., about us, case studies, terms). Build real-time preview component that renders the merged proposal content as users edit. Use React state to manage section visibility and update preview dynamically. Ensure proper handling of optional fields and conditional content rendering.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test template merging with various data combinations, verify all placeholders are correctly replaced, test section toggle functionality, validate real-time preview updates, test with missing optional fields",
             "parentId": "undefined"
           },
@@ -530,7 +530,7 @@
               1
             ],
             "details": "Create token generation utility using Node.js crypto.randomBytes(32).toString('hex') for generating unique, secure tokens. Build database schema for storing tokens with fields: token (unique index), proposal_id (foreign key), created_at, expires_at, viewed_at (nullable). Implement token creation logic that generates token, stores in database with expiration timestamp (e.g., 30 days from creation), and associates with proposal. Add token validation middleware to check expiration and existence. Include token regeneration functionality for expired links.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Verify token uniqueness across multiple generations, test cryptographic randomness, validate expiration logic, test token lookup performance with database indexes, verify security against brute force attacks",
             "parentId": "undefined"
           },
@@ -543,7 +543,7 @@
               4
             ],
             "details": "Build URL generation function that creates shareable links in format /p/[token] using the secure tokens. Create public-facing route at src/app/p/[token]/page.tsx that validates token, checks expiration, and renders proposal content. Implement proposal status state machine with transitions: draft → sent → viewed → signed → paid. Add status update API endpoints and UI controls. Track status changes with timestamps in database. Include email notification triggers for status changes. Build proposal list view showing all proposals with current status, client name, and action buttons.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test URL generation and validation, verify public route renders correctly for valid tokens, test all status transitions and validations, verify status change notifications, test proposal list filtering and sorting by status",
             "parentId": "undefined"
           }
@@ -569,7 +569,7 @@
             "description": "Set up the src/app/p/[token] route with Next.js App Router and implement server-side rendering for SEO optimization",
             "dependencies": [],
             "details": "Create the src/app/p/[token]/page.tsx file with async server component. Implement token validation by fetching proposal data from Supabase using the token parameter. Add proper error handling for invalid/expired tokens with 404 page. Configure metadata generation for SEO including dynamic title, description, and Open Graph tags based on proposal content. Ensure server-side data fetching for optimal performance and SEO.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Verify SSR works by checking page source contains proposal content, test with invalid tokens return 404, validate metadata is properly generated, test SEO with Lighthouse",
             "parentId": "undefined"
           },
@@ -581,7 +581,7 @@
               1
             ],
             "details": "Create src/components/ProposalRenderer.tsx with mobile-first responsive design. Implement dark gradient background using Avyra brand colors. Build section card components with #101011 background and #1B1C1D borders. Create hero section with radial gradient text effect for proposal title. Add responsive breakpoints at 640px (mobile) and 1024px (desktop). Implement section toggle logic to conditionally render sections based on proposal configuration. Use Tailwind CSS for styling consistency.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Visual regression tests at 640px, 768px, 1024px, and 1440px breakpoints, verify gradient effects render correctly, test section toggles hide/show content properly, cross-browser testing",
             "parentId": "undefined"
           },
@@ -780,7 +780,8 @@
         "master"
       ],
       "created": "2025-11-10T03:41:47.910Z",
-      "description": "Tasks for master context"
+      "description": "Tasks for master context",
+      "updated": "2025-11-13T08:07:08.816Z"
     }
   }
 }
