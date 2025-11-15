@@ -73,6 +73,11 @@ export type ProposalUnified = {
   view_count: number
   last_viewed_at?: string | null
   accepted_at?: string | null
+  pricing_summary?: PricingSummary | null // New: pricing calculations
+  stripe_payment_intent_id?: string | null // New: Stripe payment tracking
+  stripe_checkout_session_id?: string | null // New: Stripe checkout tracking
+  payment_status?: ProposalPaymentStatus | null // New: payment status
+  paid_at?: string | null // New: payment completion timestamp
   created_at: string
   updated_at: string
 }
@@ -84,7 +89,7 @@ export type ProposalUnifiedInsert = Omit<ProposalUnified, 'id' | 'created_at' | 
 export type ProposalUnifiedUpdate = Partial<Omit<ProposalUnified, 'id' | 'created_by' | 'created_at' | 'updated_at'>>
 
 // Element types within a block
-export type ElementType = 'text' | 'button' | 'image' | 'video' | 'divider' | 'spacer'
+export type ElementType = 'text' | 'button' | 'image' | 'video' | 'divider' | 'spacer' | 'pricing'
 
 export type BlockElement = {
   id: string
@@ -118,4 +123,40 @@ export type ProposalSectionUnified = {
 export type ProposalSectionUnifiedInsert = Omit<ProposalSectionUnified, 'id' | 'created_at' | 'updated_at'>
 
 export type ProposalSectionUnifiedUpdate = Partial<Omit<ProposalSectionUnified, 'id' | 'proposal_id' | 'created_at' | 'updated_at'>>
+
+// =====================================================
+// PRICING SYSTEM TYPES
+// =====================================================
+
+// Line Item for pricing tables
+export type ProposalLineItem = {
+  id: string
+  proposal_id: string
+  description: string
+  quantity: number
+  unit_price: number
+  stripe_product_id?: string | null
+  stripe_price_id?: string | null
+  is_custom: boolean
+  display_order: number
+  created_at: string
+  updated_at: string
+}
+
+export type ProposalLineItemInsert = Omit<ProposalLineItem, 'id' | 'created_at' | 'updated_at'>
+
+export type ProposalLineItemUpdate = Partial<Omit<ProposalLineItem, 'id' | 'proposal_id' | 'created_at' | 'updated_at'>>
+
+// Pricing Summary (stored in proposals.pricing_summary JSONB)
+export type PricingSummary = {
+  subtotal: number
+  discount_type: 'none' | 'percentage' | 'fixed'
+  discount_value: number
+  discount_amount: number
+  total: number
+  currency: string
+}
+
+// Payment Status
+export type ProposalPaymentStatus = 'unpaid' | 'pending' | 'processing' | 'succeeded' | 'failed'
 

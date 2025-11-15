@@ -2,6 +2,7 @@
 
 import { ProposalUnified, ProposalSectionUnified } from '@/types/database'
 import Badge from './ui/Badge'
+import PricingTable from './PricingTable'
 
 type ProposalViewProps = {
   proposal: ProposalUnified & {
@@ -180,6 +181,9 @@ function ProposalElement({ element }: { element: any }) {
 
     case 'divider':
       return <hr className="border-border-default my-12" />
+
+    case 'pricing':
+      return <PricingTable content={content} />
 
     default:
       return null

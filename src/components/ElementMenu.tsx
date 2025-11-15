@@ -9,6 +9,7 @@ import {
   PhotoIcon,
   VideoCameraIcon,
   MinusIcon,
+  CurrencyDollarIcon,
 } from '@heroicons/react/24/outline'
 import { ElementType } from '@/types/database'
 
@@ -23,6 +24,7 @@ const elementTypes = [
   { type: 'image' as ElementType, label: 'Image', icon: PhotoIcon, description: 'Upload or embed an image' },
   { type: 'video' as ElementType, label: 'Video', icon: VideoCameraIcon, description: 'Embed a video' },
   { type: 'divider' as ElementType, label: 'Divider', icon: MinusIcon, description: 'Visual separator' },
+  { type: 'pricing' as ElementType, label: 'Investment', icon: CurrencyDollarIcon, description: 'Add pricing table with line items' },
 ]
 
 export default function ElementMenu({ onSelectTypeAction, trigger }: ElementMenuProps) {

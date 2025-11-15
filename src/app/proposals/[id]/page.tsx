@@ -237,12 +237,24 @@ export default function ProposalEditorPage() {
       defaultHtml = '<p></p>'
     }
     
+    // Determine default content based on element type
+    let defaultContent: Record<string, unknown>
+    if (type === 'button') {
+      defaultContent = { buttonText: 'Click me', buttonUrl: '' }
+    } else if (type === 'pricing') {
+      defaultContent = {
+        lineItems: [],
+        discount: { type: 'none', value: 0 },
+        currency: 'USD',
+      }
+    } else {
+      defaultContent = { html: defaultHtml }
+    }
+    
     const newElement: BlockElement = {
       id: `element-${Date.now()}`,
       type,
-      content: type === 'button' 
-        ? { buttonText: 'Click me', buttonUrl: '' } 
-        : { html: defaultHtml },
+      content: defaultContent,
       display_order: afterIndex !== undefined ? afterIndex + 1 : 0,
     }
 

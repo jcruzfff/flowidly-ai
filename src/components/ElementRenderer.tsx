@@ -2,6 +2,7 @@
 
 import { BlockElement } from '@/types/database'
 import RichTextEditor from './RichTextEditor'
+import PricingEditor from './PricingEditor'
 import { useState, useRef, useEffect, Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { LinkIcon, PaintBrushIcon, TrashIcon, CheckIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline'
@@ -285,6 +286,16 @@ export default function ElementRenderer({
       return (
         <div className="w-full py-6">
           <hr className="border-t-2 border-border-default" />
+        </div>
+      )
+
+    case 'pricing':
+      return (
+        <div className="w-full">
+          <PricingEditor
+            content={element.content}
+            onChangeAction={(newContent) => onChangeAction({ ...element, content: newContent })}
+          />
         </div>
       )
 
