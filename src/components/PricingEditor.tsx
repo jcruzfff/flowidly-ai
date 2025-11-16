@@ -177,7 +177,7 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                       Description
                       <span className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs">?</span>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 w-48">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 w-40">
                       <div className="flex items-center gap-2">
                         Item
                         <span className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs">?</span>
@@ -189,7 +189,7 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                         <span className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs">?</span>
                       </div>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 w-40">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 w-32">
                       <div className="flex items-center gap-2">
                         Price
                         <span className="w-4 h-4 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs">?</span>
@@ -205,54 +205,66 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                       </td>
                     </tr>
                   ) : (
-                    lineItems.map((item, index) => (
-                      <tr 
-                        key={item.id} 
-                        className="relative hover:bg-gray-50 transition-colors"
-                        onMouseEnter={() => setHoveredRow(item.id)}
-                        onMouseLeave={() => setHoveredRow(null)}
-                      >
-                        <td className="px-6 py-4">
-                          <input
-                            type="text"
-                            value={item.description}
-                            onChange={(e) => handleUpdateLineItem(item.id, 'description', e.target.value)}
-                            placeholder="Add some text"
-                            className="w-full px-3 py-2 bg-transparent border-none text-gray-700 placeholder-gray-400 focus:outline-none focus:bg-white focus:border focus:border-blue-500 focus:rounded-lg transition-all"
-                          />
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
-                            <input
-                              type="number"
-                              value={item.unit_price}
-                              onChange={(e) => handleUpdateLineItem(item.id, 'unit_price', parseFloat(e.target.value) || 0)}
-                              onFocus={(e) => e.target.value === '0' && e.target.select()}
-                              min="0"
-                              step="0.01"
-                              placeholder="0.00"
-                              className="w-full pl-7 pr-3 py-2 bg-transparent border-none text-gray-700 placeholder-gray-400 focus:outline-none focus:bg-white focus:border focus:border-blue-500 focus:rounded-lg transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="number"
-                              value={item.quantity}
-                              onChange={(e) => handleUpdateLineItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
-                              onFocus={(e) => e.target.value === '1' && e.target.select()}
-                              min="0"
-                              step="1"
-                              className="w-16 px-3 py-2 bg-transparent border-none text-gray-700 focus:outline-none focus:bg-white focus:border focus:border-blue-500 focus:rounded-lg transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
-                            <span className="text-gray-500 text-sm">Unit</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-left font-semibold text-gray-700">
-                          {formatCurrency(item.quantity * item.unit_price)}
-                        </td>
+                          lineItems.map((item, index) => (
+                            <tr 
+                              key={item.id} 
+                              className="relative hover:bg-gray-50 transition-colors"
+                              onMouseEnter={() => setHoveredRow(item.id)}
+                              onMouseLeave={() => setHoveredRow(null)}
+                            >
+                              <td className="px-6 py-3 align-top">
+                                <textarea
+                                  value={item.description}
+                                  onChange={(e) => {
+                                    handleUpdateLineItem(item.id, 'description', e.target.value)
+                                    // Auto-resize on change
+                                    const target = e.target as HTMLTextAreaElement
+                                    target.style.height = 'auto'
+                                    target.style.height = target.scrollHeight + 'px'
+                                  }}
+                                  placeholder="Add some text"
+                                  rows={1}
+                                  className="w-full px-3 py-2 bg-transparent border-none text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border focus:border-blue-500 focus:rounded-lg transition-all resize-none"
+                                  style={{ minHeight: '36px', height: 'auto' }}
+                                  onFocus={(e) => {
+                                    // Ensure proper height on focus
+                                    e.target.style.height = 'auto'
+                                    e.target.style.height = e.target.scrollHeight + 'px'
+                                  }}
+                                />
+                              </td>
+                              <td className="px-6 py-3 align-top">
+                                <div className="relative">
+                                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
+                                  <input
+                                    type="number"
+                                    value={item.unit_price}
+                                    onChange={(e) => handleUpdateLineItem(item.id, 'unit_price', parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.value === '0' && e.target.select()}
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="0.00"
+                                    className="w-full pl-7 pr-3 py-2 bg-transparent border-none text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border focus:border-blue-500 focus:rounded-lg transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                  />
+                                </div>
+                              </td>
+                              <td className="px-6 py-3 align-top">
+                                <div className="flex items-center gap-1">
+                                  <input
+                                    type="number"
+                                    value={item.quantity}
+                                    onChange={(e) => handleUpdateLineItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.value === '1' && e.target.select()}
+                                    min="0"
+                                    step="1"
+                                    className="w-14 px-2 py-2 bg-transparent border-none text-sm text-gray-700 focus:outline-none focus:border focus:border-blue-500 focus:rounded-lg transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                  />
+                                  <span className="text-gray-500 text-xs">Unit</span>
+                                </div>
+                              </td>
+                              <td className="px-6 py-3 align-top text-left font-semibold text-sm text-gray-700">
+                                {formatCurrency(item.quantity * item.unit_price)}
+                              </td>
 
                         {/* Right Side: Line Item Options Menu (Half on/half off right edge) */}
                         {hoveredRow === item.id && (
@@ -271,7 +283,7 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                                 leaveFrom="transform opacity-100 scale-100"
                                 leaveTo="transform opacity-0 scale-95"
                               >
-                                <Menu.Items className="absolute left-full ml-3 top-1/2 -translate-y-1/2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl py-2 focus:outline-none z-[100]">
+                                <Menu.Items className="absolute left-full ml-3 top-1/2 -translate-y-1/2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl py-2 px-2 focus:outline-none z-100">
                                   <Menu.Item>
                                     {({ active }) => (
                                       <button
@@ -281,7 +293,7 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                                         }}
                                         className={`${
                                           active ? 'bg-gray-100' : ''
-                                        } w-full px-4 py-2.5 text-left text-sm text-gray-700 transition-colors rounded-lg mx-1`}
+                                        } w-full px-4 py-2.5 text-left text-sm text-gray-700 transition-colors rounded-lg`}
                                       >
                                         Add to saved items
                                       </button>
@@ -293,13 +305,13 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                                         onClick={() => handleDeleteLineItem(item.id)}
                                         className={`${
                                           active ? 'bg-red-50' : ''
-                                        } w-full px-4 py-2.5 text-left text-sm text-red-600 transition-colors rounded-lg mx-1`}
+                                        } w-full px-4 py-2.5 text-left text-sm text-red-600 transition-colors rounded-lg`}
                                       >
                                         Remove
                                       </button>
                                     )}
                                   </Menu.Item>
-                                  <div className="border-t border-gray-200 my-2"></div>
+                                  <div className="border-t border-gray-200 my-2 mx-2"></div>
                                   <Menu.Item>
                                     {({ active }) => (
                                       <button
@@ -309,7 +321,7 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                                         }}
                                         className={`${
                                           active ? 'bg-gray-100' : ''
-                                        } w-full px-4 py-2.5 text-left text-sm text-gray-700 transition-colors rounded-lg mx-1`}
+                                        } w-full px-4 py-2.5 text-left text-sm text-gray-700 transition-colors rounded-lg`}
                                       >
                                         Add discount
                                       </button>
@@ -326,16 +338,18 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                 </tbody>
               </table>
 
-              {/* Add Line Item Button - Left edge, below table */}
-              <div className="relative border-t border-gray-200">
-                <div className="absolute left-0 bottom-4 -translate-x-1/2">
+              {/* Add Line Item Button - Left edge, on border, appears on hover */}
+              <div 
+                className="relative border-t border-gray-200 group/add-area"
+                onMouseEnter={() => setHoveredRow('add-button')}
+                onMouseLeave={() => setHoveredRow(null)}
+              >
+                <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover/add-area:opacity-100 transition-opacity">
                   <Menu as="div" className="relative">
                     <Menu.Button 
-                      onMouseEnter={() => setHoveredRow('add-button')}
-                      onMouseLeave={() => setHoveredRow(null)}
-                      className="w-10 h-10 bg-white border-2 border-gray-300 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 hover:border-gray-400 hover:scale-110 transition-all focus:outline-none"
+                      className="w-8 h-8 bg-white border-2 border-gray-300 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 hover:border-gray-400 hover:scale-110 transition-all focus:outline-none"
                     >
-                      <PlusIcon className="w-4 h-4 text-gray-600" />
+                      <PlusIcon className="w-3.5 h-3.5 text-gray-600" />
                     </Menu.Button>
                     
                     <Transition
@@ -347,7 +361,7 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-95"
                     >
-                      <Menu.Items className="absolute right-full mr-3 top-1/2 -translate-y-1/2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl py-2 focus:outline-none z-[100]">
+                      <Menu.Items className="absolute right-full mr-3 top-1/2 -translate-y-1/2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl py-2 px-2 focus:outline-none z-[100]">
                         <Menu.Item>
                           {({ active }) => (
                             <button
@@ -356,7 +370,7 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                               }}
                               className={`${
                                 active ? 'bg-gray-100' : ''
-                              } w-full px-4 py-2.5 text-left text-sm text-gray-700 transition-colors rounded-lg mx-1`}
+                              } w-full px-4 py-2.5 text-left text-sm text-gray-700 transition-colors rounded-lg`}
                             >
                               New line item
                             </button>
@@ -371,7 +385,7 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                               }}
                               className={`${
                                 active ? 'bg-gray-100' : ''
-                              } w-full px-4 py-2.5 text-left text-sm text-gray-700 transition-colors rounded-lg mx-1`}
+                              } w-full px-4 py-2.5 text-left text-sm text-gray-700 transition-colors rounded-lg`}
                             >
                               Saved line item
                             </button>
@@ -381,7 +395,7 @@ export default function PricingEditor({ content, onChangeAction }: PricingEditor
                     </Transition>
                   </Menu>
                 </div>
-                <div className="h-16"></div>
+                <div className="h-12"></div>
               </div>
             </div>
           </div>
